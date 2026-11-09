@@ -2,35 +2,40 @@
 
 ## Current state
 
-T001 implementation is complete locally and awaits final-head CI/merge on PR #2. No storage connectors, authentication, ingestion, retrieval, or answers exist yet.
+T001 is complete and merged through [PR #2](https://github.com/abhishekvpsingh/rag-platform/pull/2). Mac local setup is verified. T002 has a first implementation increment for settings validation and readiness; Compose/runtime acceptance remains open. No storage connectors, authentication, ingestion, retrieval, or answers exist yet.
 
 ## Task status
 
 | Task | Status | Evidence |
 |---|---|---|
-| T001 | Awaiting final CI/merge | [Verification record](verification/T001.md), [PR #2](https://github.com/abhishekvpsingh/rag-platform/pull/2) |
-| T002–T025 | Not started | Specifications only |
+| T001 | Complete, merged | [Verification record](verification/T001.md), [PR #2](https://github.com/abhishekvpsingh/rag-platform/pull/2), merge `ada2f08` |
+| T002 | In progress | [Verification checkpoint](verification/T002.md); settings/readiness implemented; Compose/runtime acceptance pending |
+| T003–T025 | Not started | Specifications only |
 
 ## Development checkpoint
 
-- Updated at: 2026-11-09 UTC.
-- Session state: ready-to-merge once latest-head CI passes; check actual PR state on resume.
-- Active task: T001, final verification and publication.
-- Feature branch: feature/T001-workspace-foundation.
-- Base main SHA: 468d5528d1cf885d4773c9a994a8b97cda9b699b.
-- Last confirmed implementation checkpoint: d5259a52937430070a59ec75f1e78f9884646149, pushed with PR #2. This record accompanies its follow-up; resolve the current head from Git/GitHub.
-- Changed files since checkpoint: skip-link focus and arrow rendering in overview, keyboard-focus browser assertion, this checkpoint and verification record.
-- Checks: backend Ruff/format/mypy and 3 tests passed; frontend format/lint/typecheck, 1 unit test, production build, and 2 desktop/mobile tests passed after final code changes. Frozen installs and fresh-checkout recovery passed. See verification record for commands.
-- Remote CI: run 42695764653 passed all four jobs for d5259a5; follow-up commit must receive its own passing CI.
-- Uncommitted work: only this task's documented follow-up before publication; inspect actual status. No private data.
-- Running operations: none; browser servers stopped with test completion.
-- Remaining criteria: verify latest-head CI and merge under repository rules. Repository merge-setting limitations are documented.
-- Next action: inspect PR #2 head/checks; if passed, merge with expected-head SHA. If already merged, mark T001 complete in the next task checkpoint and begin T002 on a new branch from current main.
+- Updated at: 2026-11-09T23:37:03Z.
+- Session state: in-progress; first T002 increment verified locally, publication pending.
+- Active task: T002, development configuration and health contract. Still open: actual service adapters, remaining architecture adapter interfaces, Compose/images/volumes, Celery worker integration, startup/shutdown/recreation persistence tests, dependency recovery checks, and measured Mac stack resource use.
+- Feature branch: feature/T002-runtime-contracts.
+- Base main SHA: ada2f08a77377bc1968df942a64c37a47f941486; fetched and matches local main.
+- Last verified implementation commit: ada2f08a77377bc1968df942a64c37a47f941486 (T001). New T002 code verified in working tree; checkpoint commit and remote publication pending.
+- Confirmed remote PR: [T001 PR #2](https://github.com/abhishekvpsingh/rag-platform/pull/2), head eb7b97536e71d87601d2882586b1fbba5ef405aa merged 2026-11-09T20:50:26Z as ada2f08; final-head Documentation, Backend, Frontend, CI Gate, and GitGuardian passed. T002 draft PR pending.
+- Changed files: API runtime/readiness modules, API endpoint wiring, configuration/health tests, application/infra README, API contract spec, T001/T002 verification records, this checkpoint. No dependency/lockfile changes or unrelated edits.
+- Completed steps: reconciled T001 merge; created task branch from latest origin/main; installed isolated Node 22.23.4, pnpm 10.34.9, uv 0.13.5 and uv-managed Python 3.12.14. Activation: `source "$HOME/.local/share/rag-platform/env.sh"`. Conda Python 3.12.4, Homebrew Node 26.4.0, existing uv 0.9.26, and shell startup files preserved and rechecked. Playwright's automatic cleanup initially removed an older headless browser cache; restored build 1148 with GC disabled and documented the preservation option.
+- Implementation: side-effect-free runtime settings validation with redacted errors; typed DependencyProbe and bounded concurrent readiness orchestration; `/health/ready` truthfully returns 503/not_configured until all five live adapters exist. No feature/authorization claims changed.
+- Exact checks on T001 merge before edits: frozen uv/pnpm installs; backend lint/format/mypy and 3 tests; docs 35/0; frontend format/lint/types, 1 unit test, build, Chromium install, 2 desktop/mobile tests all passed. See [T001 evidence](verification/T001.md).
+- Exact checks on T002 working tree: `uv sync --frozen`, Ruff check/format (15 files), mypy (8 sources), pytest (33 passed), docs (36 files, 0 errors), and `git diff --check` passed. Configuration CLI exited 1 as expected with only missing names; synthetic success/failure CLI paths pass in tests. Lockfiles unchanged. Actual HTTP: live 200, ready 503/not_configured, web 200. See [T002 evidence](verification/T002.md).
+- Running operations: web production preview via `pnpm --filter @rag-platform/web start --port 3000`, PTY session 15000; updated uvicorn API loopback port 8000, process 53033 / PTY session 38139. Started and HTTP verified, intentionally left running for owner preview. Output is in tool session streams, not committed logs; these transient sessions are not a durable service manager. Docker Desktop running (engine 27.3.1 / Compose 2.30.3); no T002 containers launched.
+- Mac environment: Intel, macOS 26.6.2, 16 logical CPUs, 16 GiB RAM; Docker VM capacity 16 CPUs / 8,218,132,480 bytes RAM. This is capacity inspection, not stack usage measurement.
+- Blockers: none for the next T002 implementation step. Sandbox restrictions require reviewed elevated commands for network, Git metadata, Docker, and user-directory tool/cache writes. No secrets requested or committed.
+- Next action: publish this checkpoint to the task branch and open a draft PR; then implement the private, authenticated Compose stack and real readiness adapters. Use the settings contract in `rag-platform/infra/README.md`, verifying actual service behavior before documenting runtime commands.
+- Risks/limitations: T002 acceptance incomplete; draft must not merge even if foundation CI passes. Live dependency, persistence, security connection configuration, and Mac stack resource tests remain unverified.
 
 ## External prerequisites and limitations
 
-OAuth apps/test accounts and model credentials are required for later live tests. License/private reporting decisions precede a software release. Cloud choice/account/budget precede T024. None blocks foundation development.
+OAuth apps/test accounts and model credentials are required for later live tests. License/private reporting decisions precede a software release. Cloud choice/account/budget precedes T024. None blocks foundation development.
 
-Main protection status is unverified and native auto-merge was disabled in earlier metadata. The connector cannot update those settings; exact admin steps are in the application README. Local Docker daemon 29.9.2 is reachable outside the sandbox, so T002 runtime testing can proceed in this environment. Mac validation remains pending.
+Main protection status remains unverified; native auto-merge was disabled in earlier metadata. Exact admin steps are in the application README. No repository controls were changed in this session.
 
 Never ask for secrets in chat. Do not infer production readiness from foundation tests. Follow [continuity](DEVELOPMENT_CONTINUITY.md) and [GitHub workflow](GITHUB_WORKFLOW.md).

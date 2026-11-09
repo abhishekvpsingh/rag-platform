@@ -10,6 +10,14 @@ The development foundation includes a runnable Next.js overview and FastAPI serv
 
 Version files and package engine constraints are committed. Use your preferred version manager to select the pinned versions. Python and Node workspaces share this directory; GitHub automation lives at repository-root `.github/`.
 
+On the configured Intel Mac, select the side-by-side toolchain in each new terminal:
+
+```bash
+source "$HOME/.local/share/rag-platform/env.sh"
+```
+
+This local activation file selects Node 22.23.4, pnpm 10.34.9, and uv 0.13.5. Existing Homebrew tools and shell configuration remain unchanged. Conda keeps its default Python; `uv run --frozen python --version` inside this workspace selects the separate Python 3.12.14 virtual environment. Neither nvm nor Conda package changes are required. On other machines, install/select the prerequisite versions with your preferred tools.
+
 ## Install
 
 From the repository root:
@@ -36,9 +44,13 @@ Start the web application in another terminal from the same directory:
 pnpm dev
 ```
 
-Open `http://127.0.0.1:3000`. API docs are at `http://127.0.0.1:8000/docs`; liveness is `GET /health/live`; `GET /api/v1/capabilities` truthfully reports unavailable features. These are public, non-sensitive endpoints. Liveness does not imply dependency readiness. The overview does not call the API yet; no CORS exception is needed.
+Open `http://127.0.0.1:3000`. API docs are at `http://127.0.0.1:8000/docs`; liveness is `GET /health/live`; `GET /api/v1/capabilities` truthfully reports unavailable features. These are public, non-sensitive endpoints. Liveness does not imply dependency readiness. `GET /health/ready` currently returns **503 / not_configured**, because the stateful runtime adapters are not wired yet. The overview does not call the API yet; no CORS exception is needed.
 
 Stop either process with Ctrl+C. No database or content artifacts are created by this milestone. Compose, worker runtime, persistence, authorization, and OAuth setup are later tasks.
+
+## Runtime configuration contract (T002 in progress)
+
+The first T002 increment adds explicit, side-effect-free development configuration validation and a typed dependency probe contract. It does not start services or implement persistence. See [runtime contract](infra/README.md) for settings, validation, and remaining work. No Compose commands are available yet.
 
 ## Verification
 
@@ -55,11 +67,11 @@ pnpm lint
 pnpm typecheck
 pnpm test
 pnpm build
-pnpm --filter @rag-platform/web exec playwright install chromium
+PLAYWRIGHT_SKIP_BROWSER_GC=1 pnpm --filter @rag-platform/web exec playwright install chromium
 pnpm test:e2e
 ```
 
-On a fresh Linux machine, browser system libraries may require `playwright install --with-deps chromium`; macOS uses the normal install command. End-to-end tests start the production build on loopback port 3100; run `pnpm build` first and keep that port free. Do not reuse unrelated local servers. Browser tests cover desktop/mobile layout, status disclosure, keyboard navigation, and local links.
+On a fresh Linux machine, browser system libraries may require `playwright install --with-deps chromium`; macOS uses the command above. `PLAYWRIGHT_SKIP_BROWSER_GC=1` preserves browser caches used by other local projects. End-to-end tests start the production build on loopback port 3100; run `pnpm build` first and keep that port free. Do not reuse unrelated local servers. Browser tests cover desktop/mobile layout, status disclosure, keyboard navigation, and local links.
 
 For manual production-build smoke testing:
 

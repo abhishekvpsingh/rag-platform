@@ -21,6 +21,10 @@ Error envelope: `code`, safe `message`, `request_id`, optional field errors and 
 | Recommendations | Evidence, dismiss/snooze, activation/migration preview |
 | Operations | Health, readiness, authorized metrics, backup/migration status |
 
+## Implemented process health
+
+`GET /health/live` reports process liveness. `GET /health/ready` returns 200 only when all five runtime dependency adapters (PostgreSQL, RabbitMQ, OpenSearch, artifacts, worker) are configured and pass bounded concurrent checks. Missing adapters return 503 with `not_configured`; failed or timed-out adapters return 503 with `unavailable`. Responses include dependency names/statuses and exclude connection URLs, credentials, and exception details. These public process endpoints do not establish tenant authorization or knowledge availability. The initial T002 increment defines the probe interface but does not wire live adapters, so the current application truthfully returns `not_configured`.
+
 ## Long-running work
 
 Return 202 with job ID for asynchronous ingestion, reindexing, graph construction, and migration. Support idempotency keys for duplicate-sensitive commands. Persist state before publishing queue events. Cancellation is cooperative and cannot undo already committed side effects.
