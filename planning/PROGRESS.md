@@ -2,40 +2,33 @@
 
 ## Current state
 
-Specification repository prepared. No application code, live connectors, deployment manifests, or runtime checks have been implemented. Documentation checks do not establish product readiness.
-
-## Next ready task
-
-**T001 — Bootstrap application workspace**, followed by T002 and T003. Read [implementation plan](IMPLEMENTATION_PLAN.md) and [architecture](ARCHITECTURE.md).
+T001 foundation development in progress. Specifications remain the product contract. No source connectors or RAG answers are implemented.
 
 ## Task status
 
-| Range | Status | Evidence |
+| Task | Status | Evidence |
 |---|---|---|
-| T001–T025 | Not started | Specifications only |
-
-## External prerequisites
-
-- OAuth application registrations and supported test accounts for live connector validation.
-- Model-provider credentials or an explicitly configured local endpoint for live model tests.
-- Owner software-license selection and private security-reporting channel before software release.
-- Cloud-provider choice, authorized account, and budget before T024.
-
-These do not block offline foundation development. Never ask for secrets in chat or commit them.
-
-## Session handoff format
-
-Update this file after meaningful implementation work with date, task IDs, concrete changes, exact checks/results, limitations, blockers, and next ready task. Keep implementation details in code/specifications and architecture choices in decision records. Do not copy the entire backlog here.
+| T001 | In progress | Runnable API/web foundation; local checks passing; final CI/recovery checks pending |
+| T002–T025 | Not started | Specifications only |
 
 ## Development checkpoint
 
-- Updated at: 2026-11-09 UTC (documentation preparation; no runtime task started).
-- Session state: ready.
-- Active task/substep: none; next is T001.
-- Feature branch/base/head/PR: no application-development branch yet; inspect Git before starting.
-- Verification: initial specification link/fence checks passed; no application or CI checks exist yet.
-- Uncommitted/running work: none recorded for application development; inspect actual state on resume.
-- Remaining acceptance criteria: T001–T025 remain not started.
-- Next action: inspect Git state, read the continuity and GitHub protocols, create/resume the T001 branch.
+- Updated at: 2026-11-09 UTC.
+- Session state: in-progress.
+- Active task: T001, bootstrap and verify workspace/CI.
+- Feature branch: feature/T001-workspace-foundation.
+- Base main SHA: 468d5528d1cf885d4773c9a994a8b97cda9b699b.
+- Last confirmed remote: feature branch created at base; first implementation checkpoint being prepared. Resolve actual head from Git/GitHub on resume.
+- Changed files: Python API/tests, Next.js overview/tests, workspace/lockfiles, root CI/PR template, verified setup documentation. No customer data or credentials.
+- Checks on working tree: uv sync --frozen and pnpm install --frozen-lockfile passed; Ruff/mypy passed; pytest 3 passed; frontend lint/typecheck passed; Vitest 1 passed; Next production build passed; Playwright desktop/mobile 2 passed; pnpm audit --prod found no known vulnerabilities. Final rerun after formatting/configuration updates pending.
+- Running operations: none confirmed.
+- Next action: push checkpoint/open PR, run final CI and local checks, validate fresh-workspace recovery, inspect screenshots.
+- Acceptance still open: fresh install, API/web smoke checks, CI PR checks, resume exercise, merge-setting status.
 
-Use [DEVELOPMENT_CONTINUITY.md](DEVELOPMENT_CONTINUITY.md) for all future checkpoints and [GITHUB_WORKFLOW.md](GITHUB_WORKFLOW.md) for publication/merge state. Never treat this initial record as newer than actual code, Git history, or another session's verified checkpoint.
+## External prerequisites
+
+OAuth apps/test accounts and model credentials are needed for later live tests, not foundation development. License selection/private reporting channel precede software release. Cloud choice/account/budget precede T024. GitHub merge settings must be recorded honestly if admin tooling is unavailable. Never request secrets in chat.
+
+## GitHub control status
+
+CI workflow and gate are implemented in this branch; no remote CI result has been confirmed yet. Branch protection status is unverified; native auto-merge was disabled in the last available repository metadata. Available tooling cannot configure these settings; exact administrator steps are in the application README. Never bypass repository rules.

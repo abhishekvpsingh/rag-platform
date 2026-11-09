@@ -1,0 +1,21 @@
+{
+  "name": "rag-platform-workspace",
+  "private": true,
+  "packageManager": "pnpm@10.34.9",
+  "engines": {
+    "node": ">=22.23.4 <23",
+    "pnpm": "10.34.9"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @rag-platform/web dev",
+    "build": "pnpm --filter @rag-platform/web build",
+    "lint": "pnpm --filter @rag-platform/web lint",
+    "typecheck": "pnpm --filter @rag-platform/web typecheck",
+    "test": "pnpm --filter @rag-platform/web test",
+    "test:e2e": "pnpm --filter @rag-platform/web test:e2e",
+    "format:check": "prettier --check \"apps/web/{app,e2e,tests}/**/*.{ts,tsx,css}\" \"apps/web/*.{ts,mjs,json}\" package.json pnpm-workspace.yaml"
+  },
+  "devDependencies": {
+    "prettier": "3.6.2"
+  }
+}
