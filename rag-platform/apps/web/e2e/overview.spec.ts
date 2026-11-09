@@ -15,6 +15,7 @@ test("overview is navigable and honest about unavailable functionality", async (
   ).toBeFocused();
   await page.keyboard.press("Enter");
   await expect(page).toHaveURL(/#main$/);
+  await expect(page.getByRole("main")).toBeFocused();
   await page.getByRole("link", { name: /Explore the roadmap/ }).click();
   await expect(page).toHaveURL(/#getting-started$/);
   await page.screenshot({

@@ -46,7 +46,7 @@ export default function Home() {
           <p>Your workspace starts here. Source connections are coming next.</p>
         </div>
       </aside>
-      <main id="main" className="main">
+      <main id="main" className="main" tabIndex={-1}>
         <header className="topbar">
           <span>Workspace overview</span>
           <span className="badge">Development preview</span>
@@ -64,7 +64,7 @@ export default function Home() {
               what’s current, and following the evidence.
             </p>
             <a className="primary-link" href="#getting-started">
-              Explore the roadmap <span aria-hidden="true">↗</span>
+              Explore the roadmap <span aria-hidden="true">→</span>
             </a>
           </div>
           <div className="knowledge-art" aria-hidden="true">
@@ -120,7 +120,7 @@ export default function Home() {
             <span aria-hidden="true">◷</span> Current and historical context
           </p>
           <p>
-            <span aria-hidden="true">↗</span> Evidence you can inspect
+            <span aria-hidden="true">→</span> Evidence you can inspect
           </p>
         </section>
         <footer>
