@@ -2,13 +2,13 @@
 
 ## Purpose and scope
 
-Build the RAG Platform described in `planning/`. The repository currently contains specifications, not a functioning product. Application code, dependency files, tests, deployment assets, and runtime documentation belong under `rag-platform/`. Keep planning outside that directory. Open this repository root as the development workspace.
+Build the RAG Platform described in `planning/`. The repository currently contains specifications, not a functioning product. Application code, dependency files, tests, deployment assets, and runtime documentation belong under `rag-platform/`. GitHub-recognized automation is the exception: workflows and PR templates belong under repository-root `.github/`. Keep planning outside that directory. Open this repository root as the development workspace.
 
 ## Start every session
 
-Read `planning/INDEX.md`, `planning/PROGRESS.md`, `planning/IMPLEMENTATION_PLAN.md`, and `planning/ARCHITECTURE.md`. Then read only the additional specifications relevant to the selected task. Honor explicit user instructions over these documents. Resolve material specification conflicts before affected implementation.
+Read `planning/DEVELOPMENT_CONTINUITY.md`, `planning/GITHUB_WORKFLOW.md`, `planning/INDEX.md`, `planning/PROGRESS.md`, `planning/IMPLEMENTATION_PLAN.md`, and `planning/ARCHITECTURE.md`. Then read only the additional specifications relevant to the selected task. Honor explicit user instructions over these documents. Resolve material specification conflicts before affected implementation.
 
-Choose the next ready task by dependencies and execute it through its acceptance criteria. Continue to subsequent ready work within the authorized scope; do not stop merely after proposing a plan. Do not spawn agents unless explicitly requested by the user or a later applicable instruction.
+First reconcile the saved checkpoint with actual Git/filesystem state and resume unfinished work. Checkpoint during work, not only at session end; an abrupt limit may prevent a final write. Choose the next ready task by dependencies and execute it through its acceptance criteria. Continue to subsequent ready work within the authorized scope; do not stop merely after proposing a plan. Do not spawn agents unless explicitly requested by the user or a later applicable instruction.
 
 ## Autonomy and boundaries
 
@@ -17,6 +17,10 @@ Make routine implementation choices without repeated approval. Record consequent
 Never provision paid infrastructure, change source access, publish software releases, or expose private data without applicable authorization. Repository development is not permission to incur cloud costs. Credentials and OAuth registrations must be supplied through local environment/secrets, never chat or committed files. External prerequisites block their affected task only; continue independent work.
 
 Do not select a software license on the owner's behalf. Keep live connector validation pending until actual supported test accounts are available. Do not disable security requirements to make a demo pass.
+
+## Version control and continuity
+
+Follow `planning/DEVELOPMENT_CONTINUITY.md` for checkpointing and recovery, and `planning/GITHUB_WORKFLOW.md` for branching, pushing, PRs, and merge gates. The owner authorizes automatic task-branch pushes and merging completed changes after required checks pass; do not ask again for each push/merge. Preserve branch protection and unrelated work. Incomplete checkpoints may be pushed but must not merge. Never claim Markdown alone implements background automation or can bypass usage limits.
 
 ## Engineering invariants
 
@@ -35,7 +39,8 @@ Do not select a software license on the owner's behalf. Keep live connector vali
 2. Select a bounded task and implement its behavior, including failure paths.
 3. Run the meaningful checks required by that task and affected interfaces.
 4. Update runtime documentation and specifications where behavior changed.
-5. Update PROGRESS with task IDs, exact results, limitations, blockers, and next task.
+5. Update PROGRESS with the continuity checkpoint fields, task IDs, exact results, limitations, blockers, and next action.
+6. Commit/push the task branch and open/update its PR; merge only after the GitHub workflow's applicable verification gate passes.
 
 Prefer typed modules, explicit interfaces, small migrations, maintained libraries, deterministic fixtures, and bounded external calls. Follow CONTRIBUTING under `rag-platform/`. Do not introduce unused services or speculative features ahead of milestones.
 

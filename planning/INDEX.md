@@ -5,7 +5,9 @@
 1. [Product](PRODUCT.md): scope, roles, invariants, and release expectations.
 2. [Architecture](ARCHITECTURE.md): chosen components and contracts.
 3. [Implementation plan](IMPLEMENTATION_PLAN.md): ordered tasks and acceptance criteria.
-4. [Progress](PROGRESS.md): current status and next work.
+4. [Continuity](DEVELOPMENT_CONTINUITY.md): checkpoint and resume protocol.
+5. [GitHub workflow](GITHUB_WORKFLOW.md): feature branches, automatic pushes, and verified merges.
+6. [Progress](PROGRESS.md): current status, active checkpoint, and next work.
 
 ## Read by task
 
