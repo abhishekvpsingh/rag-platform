@@ -6,13 +6,15 @@ Work in the order below unless independent tasks or a documented dependency just
 
 Do not build every feature simultaneously. The first useful target is an end-to-end, owner-only, permission-safe answer from a real supported source. Multi-user sharing requires explicit ACL support; it cannot be approximated by granting everyone connector-owner access.
 
+Follow [development continuity](DEVELOPMENT_CONTINUITY.md) and [GitHub workflow](GITHUB_WORKFLOW.md) throughout. Resume checkpoints before selecting new work, push task branches automatically, and merge completed changes only through the applicable verification gate.
+
 ## M0 — Repository and measurable contracts
 
 ### T001 — Bootstrap application workspace
 
-Dependencies: none. Create the planned application directories, Python/TypeScript workspace configuration, lockfiles, lint/typecheck/test tools, and CI. Keep all runtime assets under `rag-platform/`.
+Dependencies: none. Create the planned application directories, Python/TypeScript workspace configuration, lockfiles, lint/typecheck/test tools, and CI. Add root `.github/workflows/` automation, documentation checks, stable required CI gates, and a PR template. Implement and verify GitHub merge settings where tooling permits; document remaining admin prerequisites. Keep all runtime assets under `rag-platform/`.
 
-Acceptance: fresh dependency installation succeeds with pinned tool versions; API/web smoke tests run; exact verified commands are documented. CI requires no company credentials.
+Acceptance: fresh dependency installation succeeds with pinned tool versions; API/web smoke tests run; exact verified commands are documented. CI requires no company credentials. Demonstrate a checkpoint/fresh-session resume exercise and a feature-branch PR with applicable checks. Record whether branch protection and native auto-merge are actually configured; do not claim policy documents implement them.
 
 ### T002 — Runtime and contracts
 
