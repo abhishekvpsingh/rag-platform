@@ -46,7 +46,7 @@ Prefer typed modules, explicit interfaces, small migrations, maintained librarie
 
 ## Commands and verification
 
-No runtime commands are verified yet. T001/T002 must establish exact install, lint, typecheck, test, build, and startup commands in `rag-platform/README.md` and CI. After that, use documented commands and fix stale documentation. Test security/policy invariants meaningfully; avoid tests that merely duplicate implementation constants.
+The foundation install, lint, typecheck, test, build, and local API/web commands are documented in `rag-platform/README.md` and exercised by CI. Use those commands and keep them accurate. T002 must add verified Compose/runtime commands; do not infer that future commands already work. Test security/policy invariants meaningfully; avoid tests that merely duplicate implementation constants.
 
 Use offline synthetic fixtures for normal CI and opt-in dedicated accounts for live tests. Record actual checks, not presumed success. If checks cannot run, explain why and leave their acceptance criteria pending. Never mark tasks complete based only on UI mockups or static types.
 

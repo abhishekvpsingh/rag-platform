@@ -28,3 +28,7 @@ rag-platform/.logs/
 # Editor and OS
 .DS_Store
 .idea/
+
+# Local tooling and incremental caches
+.pnpm-store/
+*.tsbuildinfo

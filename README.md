@@ -4,7 +4,7 @@
 
 An extensible, self-hosted knowledge platform designed to turn company files into permission-aware answers with precise citations. Start with Google Drive and Microsoft OneDrive on a single machine, with a planned path to distributed processing and optional knowledge graph retrieval.
 
-> **Project status:** specification and development roadmap. This repository currently contains the product and engineering blueprints. The application, connectors, deployment manifests, and performance claims have not yet been implemented or validated. There is no runnable release today.
+> **Project status:** early development. The workspace foundation includes a runnable web overview and API with smoke tests. Source connections, ingestion, and RAG answering are not implemented yet. There is no production release today.
 
 ## Why this project exists
 
@@ -82,11 +82,11 @@ No file-count or billion-document capacity guarantee is made. Capacity depends o
     └── SECURITY.md
 ```
 
-The planned application layout includes `apps/web`, `services/api`, `services/workers`, `packages`, `infra`, and `tests`. Those directories will be created when their implementation begins.
+The application layout includes `apps/web`, `services/api`, `services/workers`, `packages`, `infra`, and `tests`. Reserved directories are labeled explicitly; their presence does not imply implemented capabilities.
 
 ## Getting started
 
-At this stage, start with [the product specification](planning/PRODUCT.md), [architecture](planning/ARCHITECTURE.md), and [implementation milestones](planning/IMPLEMENTATION_PLAN.md). Installation and startup commands will be published with the first runnable milestone; no placeholder command is presented as working.
+To run the development foundation locally, follow the verified [application setup instructions](rag-platform/README.md). For product scope and upcoming work, read [the product specification](planning/PRODUCT.md), [architecture](planning/ARCHITECTURE.md), and [implementation milestones](planning/IMPLEMENTATION_PLAN.md).
 
 The initial connector target is Google Drive My Drive and delegated personal OneDrive. Shared drives, Microsoft 365 work/school accounts, and broader enterprise permission behavior are explicit follow-up work with separate acceptance tests.
 
