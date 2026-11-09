@@ -23,7 +23,7 @@ class FixtureProbe:
 
     async def check(self) -> bool:
         if self.behavior == "raise":
-            raise ConnectionError("amqp://private-user:private-password@broker")
+            raise ConnectionError("connection failure with private credential details")
         if self.behavior == "hang":
             try:
                 await asyncio.Event().wait()
