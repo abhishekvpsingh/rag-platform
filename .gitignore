@@ -1,0 +1,30 @@
+# Secrets and local state
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+credentials/
+# Dependencies and build output
+node_modules/
+.next/
+dist/
+build/
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+coverage/
+playwright-report/
+test-results/
+# Runtime artifacts and private data
+rag-platform/.data/
+rag-platform/.artifacts/
+rag-platform/.backups/
+rag-platform/.logs/
+# Editor and OS
+.DS_Store
+.idea/
