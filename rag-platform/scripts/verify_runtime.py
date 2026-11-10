@@ -66,7 +66,11 @@ def main() -> None:
     stopped = json.loads(subprocess.check_output(["docker", "inspect", *stopped_ids]))
     assert len(stopped) == 6
     assert all(not item["State"]["Running"] and not item["State"]["OOMKilled"] for item in stopped)
-    assert all(item["State"]["ExitCode"] in (0, 143) for item in stopped)
+    exit_codes = {
+        item["Config"]["Labels"]["com.docker.compose.service"]: item["State"]["ExitCode"]
+        for item in stopped
+    }
+    assert all(code in (0, 143) for code in exit_codes.values()), exit_codes
     compose("down", "--timeout", "30")
     compose("up", "-d", "--wait", "--wait-timeout", "300")
     ready()
