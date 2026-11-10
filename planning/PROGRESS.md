@@ -10,25 +10,25 @@ T001 is complete and merged through [PR #2](https://github.com/abhishekvpsingh/r
 |---|---|---|
 | T001 | Complete, merged | [Verification record](verification/T001.md), [PR #2](https://github.com/abhishekvpsingh/rag-platform/pull/2), merge `ada2f08` |
 | T002 | Runtime verified; merge blocked | [Verification evidence](https://github.com/abhishekvpsingh/rag-platform/blob/feature/T002-runtime-contracts/planning/verification/T002.md); GitGuardian classification pending |
-| T003 | Locally verified; CI/PR pending | [Verification](verification/T003.md) |
+| T003 | Implemented; final-head CI/merge pending | [Verification](verification/T003.md) |
 | T004–T025 | Not started | Specifications only |
 
 ## Development checkpoint
 
-- Updated at: 2026-11-10T16:18:28Z.
-- Session state: in-progress; local T003 acceptance passes, publication/final-head CI pending.
+- Updated at: 2026-11-10T16:19:51Z.
+- Session state: in-progress; local T003 acceptance passes, published as draft PR #4; final-head CI pending.
 - Active task: T003, offline evaluation baseline. Acceptance implemented; remote gate still open.
 - Feature branch: feature/T003-evaluation-baseline; worktree /private/tmp/rag-platform-t003.
 - Base main SHA: ada2f08a77377bc1968df942a64c37a47f941486. T003 depends only on T001 and imports no unmerged T002 code.
-- Last verified implementation commit: ada2f08; T003 verified in working tree, publication pending.
-- Remote PR: T003 pending; T002 remains [PR #3](https://github.com/abhishekvpsingh/rag-platform/pull/3), draft and unmerged.
+- Last confirmed pushed/locally verified implementation: 98da15b3204b2a0b9d6795296eb84ee11f01c781; origin/feature/T003-evaluation-baseline matches. This documentation follow-up requires its own current-head CI.
+- Remote PR: [T003 PR #4](https://github.com/abhishekvpsingh/rag-platform/pull/4), open/draft; T002 remains [PR #3](https://github.com/abhishekvpsingh/rag-platform/pull/3), draft and unmerged.
 - Changed files: evaluation module/tests, versioned fixtures/CSV, reference report, CI offline runner command, runtime README, testing specification, decision 0001, verification record, this checkpoint. No unrelated work or dependency/lockfile changes.
 - Completed steps: strict schema; deterministic Unicode lexical reference baseline; independent raw-output scorer; explicit grants/dates/revisions/locators/forbidden sources; disjoint tuning/held-out cases; artifact/runner hashes; documented quality/latency targets before first run. Full scope/limits in [verification](verification/T003.md).
-- Exact checks: frozen install; Ruff check/format (14 files); mypy (6 sources); pytest (24 passed). Both CLI splits exit 0, Recall@3 1.0, zero forbidden/invalid citations. Two separate held-out processes compare byte-identically. Warm 100-run full-split p50 5.69 ms / p95 5.97 ms, target <=50 ms on declared Mac. Final docs: 38 Markdown files, zero link/fence errors; git diff --check passed. Remote checks pending publication.
-- Running operations: T003 local commands completed; no service needed. T002 Actions run 42852558994 is checking 5c006eb (direct Node shutdown fix). Existing T002 containers/previews not modified by T003.
-- T002 recovery: final saved changes pushed as b936723; its new Linux stop-exit assertion failed. Follow-up 5c006eb runs web Node directly rather than through pnpm and reports per-service exit codes. No failed check ignored; inspect final CI before trusting current-head runtime acceptance. Original GitGuardian test-credential finding still requires dashboard classification.
+- Exact checks: frozen install; Ruff check/format (14 files); mypy (6 sources); pytest (24 passed). Both CLI splits exit 0, Recall@3 1.0, zero forbidden/invalid citations. Two separate held-out processes compare byte-identically. Warm 100-run full-split p50 5.69 ms / p95 5.97 ms, target <=50 ms on declared Mac. Final docs: 38 Markdown files, zero link/fence errors; git diff --check passed. Final-head remote checks pending on PR #4.
+- Running operations: T003 local commands completed; no service needed. T002 Actions run 42852558994 passed Backend, Frontend, Documentation, Runtime Integration and CI Gate for 5c006eb (direct Node shutdown fix); the duplicate PR-triggered run may still be pending. Existing T002 containers/previews not modified by T003.
+- T002 recovery: final saved changes pushed as b936723; its new Linux stop-exit assertion failed. Follow-up 5c006eb runs web Node directly rather than through pnpm and reports per-service exit codes. The correction passed full Linux runtime CI in run 42852558994. No failed check was ignored. Original GitGuardian test-credential finding still requires dashboard classification.
 - Blockers: no T003 blocker. T002 classification requires the separate GitGuardian dashboard; independent development continues.
-- Next action: validate documentation/diff, push T003, open PR, inspect final-head gates and merge only if every applicable check/review passes; reconcile latest T002 run as well.
+- Next action: inspect PR #4 checks on its latest head, mark ready and squash merge with expected SHA only after every gate/review passes. Then integrate updated main into T002 normally, preserve the synthetic-credential blocker, and reconcile both task statuses.
 - Risks/limitations: fixture reference results do not validate product retrieval, live ACLs, answer generation, temporal resolution, injection defense, analytics, or production performance. Owner license choice remains pending before release.
 
 ## Preserved T002 checkpoint (separate branch)
