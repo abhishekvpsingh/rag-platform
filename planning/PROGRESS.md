@@ -14,8 +14,8 @@ T001 is complete and merged through [PR #2](https://github.com/abhishekvpsingh/r
 
 ## Development checkpoint
 
-- Updated at: 2026-11-09T23:41:08Z.
-- Session state: in-progress; first T002 increment and fixture remediation verified locally and saved remotely in draft PR #3.
+- Updated at: 2026-11-10T01:12:00Z.
+- Session state: in-progress; resumed clean branch at 72005ac, current main unchanged. Implementing live Compose runtime in working tree; not merge eligible.
 - Active task: T002, development configuration and health contract. Still open: actual service adapters, remaining architecture adapter interfaces, Compose/images/volumes, Celery worker integration, startup/shutdown/recreation persistence tests, dependency recovery checks, and measured Mac stack resource use.
 - Feature branch: feature/T002-runtime-contracts.
 - Base main SHA: ada2f08a77377bc1968df942a64c37a47f941486; fetched and matches local main.
@@ -30,7 +30,7 @@ T001 is complete and merged through [PR #2](https://github.com/abhishekvpsingh/r
 - Mac environment: Intel, macOS 26.6.2, 16 logical CPUs, 16 GiB RAM; Docker VM capacity 16 CPUs / 8,218,132,480 bytes RAM. This is capacity inspection, not stack usage measurement.
 - CI: initial checkpoint Actions runs 42722019556 (push) and 42722056757 (PR) passed all four Actions jobs at df9d5a5; this follow-up requires its own checks. GitGuardian flagged a literal synthetic test URL in df9d5a5 (incident 39882436). No real account/service used it. Follow-up replaces embedded test credentials with ephemeral generated values; security scanning stays enabled and history is preserved. At ccef192 the scanner still flags only that original df9d5a5 occurrence, not a new fixture credential. Owner classification of synthetic incident 39882436 in GitGuardian is needed; dashboard access is not available through the connected tools. Actions runs 42722342476/42722351516 were pending at last inspection; inspect their final results and any newer documentation-head runs. No merge allowed with a failed check.
 - Blockers: no implementation blocker for the next T002 step; security-check status must be resolved before any eventual merge. Sandbox restrictions require reviewed elevated commands for network, Git metadata, Docker, and user-directory tool/cache writes. No secrets requested or committed.
-- Next action: inspect the latest PR #3 head/checks and this checkpoint, then implement the private, authenticated Compose stack and real readiness adapters. Use the settings contract in `rag-platform/infra/README.md`, verifying actual service behavior before documenting runtime commands.
+- Next action: finish container builds and run restart/recreation/dependency recovery verification. New Compose/Dockerfiles, generated local TLS setup, adapters, Celery runtime, and smoke scripts are uncommitted. Local .env/.data are ignored. Original Docker pulls/builds stalled in credential helper; isolated anonymous config in /private/tmp/rag-t002-docker succeeds. GitGuardian dashboard is signed out; requested local sign-in. Confirmed 72005ac Actions all pass, GitGuardian fails only original synthetic fixture. Classic branch protection absent and ruleset list empty. New runtime is not yet verified.
 - Risks/limitations: T002 acceptance incomplete; draft must not merge even if foundation CI passes. Live dependency, persistence, security connection configuration, and Mac stack resource tests remain unverified.
 
 ## External prerequisites and limitations

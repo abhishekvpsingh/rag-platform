@@ -57,3 +57,14 @@ def create_app(readiness: ReadinessChecker | None = None) -> FastAPI:
 
 
 app = create_app()
+
+
+def runtime_app() -> FastAPI:
+    """Explicit configured entry point: invalid configuration fails startup safely."""
+    import os
+
+    from rag_api.adapters import runtime_checker
+    from rag_api.runtime import RuntimeSettings
+
+    settings = RuntimeSettings.from_env(os.environ)
+    return create_app(runtime_checker(settings, os.environ.get("RAG_SEARCH_CA")))

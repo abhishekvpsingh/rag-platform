@@ -44,13 +44,17 @@ Start the web application in another terminal from the same directory:
 pnpm dev
 ```
 
-Open `http://127.0.0.1:3000`. API docs are at `http://127.0.0.1:8000/docs`; liveness is `GET /health/live`; `GET /api/v1/capabilities` truthfully reports unavailable features. These are public, non-sensitive endpoints. Liveness does not imply dependency readiness. `GET /health/ready` currently returns **503 / not_configured**, because the stateful runtime adapters are not wired yet. The overview does not call the API yet; no CORS exception is needed.
+Open `http://127.0.0.1:3000`. API docs are at `http://127.0.0.1:8000/docs`; liveness is `GET /health/live`; `GET /api/v1/capabilities` truthfully reports unavailable features. These are public, non-sensitive endpoints. Liveness does not imply dependency readiness. `GET /health/ready` returns **503 / not_configured** in this lightweight mode; the configured Compose runtime probes all dependencies. The overview does not call the API yet; no CORS exception is needed.
 
-Stop either process with Ctrl+C. No database or content artifacts are created by this milestone. Compose, worker runtime, persistence, authorization, and OAuth setup are later tasks.
+Stop either process with Ctrl+C. These lightweight commands do not start stateful services. Use Compose below for the complete development runtime. Authorization and OAuth remain later tasks.
 
-## Runtime configuration contract (T002 in progress)
+## Compose runtime (T002)
 
-The first T002 increment adds explicit, side-effect-free development configuration validation and a typed dependency probe contract. It does not start services or implement persistence. See [runtime contract](infra/README.md) for settings, validation, and remaining work. No Compose commands are available yet.
+See the [runtime instructions](infra/README.md) for setup, authenticated services,
+locally generated TLS, persistent volumes, startup/shutdown, and the opt-in
+restart/recovery exercise. Only loopback API/web ports are published. No external
+account, model credentials, or paid infrastructure is required. See
+[T002 verification](../planning/verification/T002.md) for current acceptance status.
 
 ## Verification
 
@@ -87,9 +91,9 @@ This is a local build check, not a hardened production deployment. Unit/API test
 |---|---|
 | `apps/web/` | Next.js development overview and frontend/browser tests |
 | `services/api/` | FastAPI process metadata and capabilities |
-| `services/workers/` | Reserved for durable processing workers |
+| `services/workers/` | Worker runtime documentation; application jobs arrive in T006 |
 | `packages/connectors/` | Reserved for connector contracts/adapters |
-| `infra/` | Reserved for Compose and later Kubernetes |
+| `infra/` | Development Dockerfiles and runtime instructions |
 | `tests/` | API tests and future synthetic integration fixtures |
 | `scripts/` | Repository documentation validation |
 

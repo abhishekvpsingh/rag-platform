@@ -1,26 +1,9 @@
 """Synthetic configuration fixtures; no accounts, external requests, or real secrets."""
 
-import secrets
-from urllib.parse import urlsplit, urlunsplit
+from urllib.parse import urlsplit
 
 import pytest
 from rag_api.runtime import RuntimeConfigurationError, RuntimeSettings, main
-
-
-@pytest.fixture
-def runtime_env() -> dict[str, str]:
-    def endpoint(scheme: str, host: str) -> str:
-        credentials = "fixture:" + secrets.token_urlsafe(24)
-        return urlunsplit((scheme, f"{credentials}@{host}", "/rag", "", ""))
-
-    return {
-        "RAG_DATABASE_URL": endpoint("postgresql", "postgres:5432"),
-        "RAG_BROKER_URL": endpoint("amqp", "rabbitmq:5672"),
-        "RAG_SEARCH_URL": "https://opensearch:9200",
-        "RAG_SEARCH_USERNAME": "fixture-admin",
-        "RAG_SEARCH_PASSWORD": secrets.token_urlsafe(24),
-        "RAG_ARTIFACT_ROOT": "/var/lib/rag/artifacts",
-    }
 
 
 def test_config_is_explicit_and_does_not_modify_environment(runtime_env: dict[str, str]) -> None:
