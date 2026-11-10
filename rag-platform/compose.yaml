@@ -46,7 +46,11 @@ services:
     entrypoint: [bash, /start-search.sh]
     volumes:
       - search-data:/usr/share/opensearch/data
-      - ./.data/tls:/local-tls:ro
+      - ./.data/tls/root-ca.pem:/local-tls/root-ca.pem:ro
+      - ./.data/tls/esnode.pem:/local-tls/esnode.pem:ro
+      - ./.data/tls/esnode-key.pem:/local-tls/esnode-key.pem:ro
+      - ./.data/tls/kirk.pem:/local-tls/kirk.pem:ro
+      - ./.data/tls/kirk-key.pem:/local-tls/kirk-key.pem:ro
       - ./infra/start-search.sh:/start-search.sh:ro
     healthcheck:
       test: [CMD-SHELL, 'curl --fail --silent --cacert config/root-ca.pem -u "admin:$$OPENSEARCH_INITIAL_ADMIN_PASSWORD" https://localhost:9200/_cluster/health >/dev/null']
