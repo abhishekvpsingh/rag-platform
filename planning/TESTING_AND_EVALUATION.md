@@ -39,3 +39,20 @@ Duplicate delivery, worker kill mid-stage, expired lease, broker outage, failed 
 ## Reporting
 
 CI reports exact checks and artifacts. Benchmark reports disclose corpus size, chunks, ACL distribution, hardware, models, concurrency, cold/warm cache, percentile latency, throughput, and cost. Simulated local nodes do not certify production resilience. Release notes distinguish fixtures, live integrations, and untested account/provider combinations.
+
+## Implemented offline baseline (T003)
+
+The [fixture workload](../rag-platform/tests/fixtures/evaluation/README.md) declares
+45 synthetic evidence documents and 17 cases (5 tuning / 12 held out), with exact
+revisions/locators, explicit forbidden evidence and expected answer behaviors.
+The executable schema and independent scorer live in
+`rag-platform/services/api/src/rag_api/evaluation.py`. Corpus/split and runner
+SHA-256 values identify the report inputs; baseline/processing/model/index/prompt
+versions are explicit. No model/index/prompt is used in the reference run.
+
+Initial targets were fixed before the first run: Recall@3 >= 0.90, zero forbidden
+or invalid citations, and warm serial p95 <= 50 ms per held-out split (100 samples)
+on the owner's Intel Mac. CI enforces quality/access/citation gates and offline
+regression tests, not wall-clock timing. [Decision 0001](decisions/0001-offline-evaluation-baseline.md)
+records scope and alternatives. This reference fixture baseline does not validate
+product retrieval, answer correctness, prompt injection resistance, or live ACLs.
