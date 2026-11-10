@@ -1,0 +1,76 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "id": "current-leave",
+      "tenant": "tenant-a",
+      "actor": "member-a",
+      "as_of": "2026-06-01",
+      "query": "annual leave allowance",
+      "expected": [
+        "leave-current"
+      ],
+      "forbidden": [
+        "leave-old",
+        "leave-future"
+      ],
+      "behavior": "answer"
+    },
+    {
+      "id": "regional-grant",
+      "tenant": "tenant-a",
+      "actor": "member-a",
+      "as_of": "2026-06-01",
+      "query": "Ontario statutory wellness",
+      "expected": [
+        "regional"
+      ],
+      "forbidden": [],
+      "behavior": "answer",
+      "region": "CA-ON"
+    },
+    {
+      "id": "identifier",
+      "tenant": "tenant-a",
+      "actor": "member-a",
+      "as_of": "2026-06-01",
+      "query": "POL-0199 equipment replacement",
+      "expected": [
+        "exact-code"
+      ],
+      "forbidden": [],
+      "behavior": "answer"
+    },
+    {
+      "id": "table-total",
+      "tenant": "tenant-a",
+      "actor": "member-a",
+      "as_of": "2026-06-01",
+      "query": "expense rail bus total",
+      "expected": [
+        "expense-table"
+      ],
+      "forbidden": [],
+      "behavior": "analytical",
+      "expected_value": 30
+    },
+    {
+      "id": "member-private",
+      "tenant": "tenant-a",
+      "actor": "member-a",
+      "as_of": "2026-06-01",
+      "query": "restricted salary figure",
+      "expected": [],
+      "forbidden": [
+        "private",
+        "other-tenant",
+        "stale",
+        "unknown",
+        "revoked",
+        "deleted",
+        "corrupt"
+      ],
+      "behavior": "abstain"
+    }
+  ]
+}

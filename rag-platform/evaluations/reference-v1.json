@@ -1,0 +1,100 @@
+{
+  "baseline_version": "lexical-fixture-v1",
+  "case_count": 12,
+  "cases": [
+    {
+      "id": "historical-leave",
+      "recall_at_k": 1.0,
+      "returned": [
+        "leave-old",
+        "partial-active",
+        "partial-superseded"
+      ]
+    },
+    {
+      "id": "future-leave",
+      "recall_at_k": 1.0,
+      "returned": [
+        "leave-future",
+        "partial-active"
+      ]
+    },
+    {
+      "id": "regional-excluded",
+      "recall_at_k": null,
+      "returned": []
+    },
+    {
+      "id": "conflicting-rates",
+      "recall_at_k": 1.0,
+      "returned": [
+        "conflict-a",
+        "conflict-b"
+      ]
+    },
+    {
+      "id": "long-locator",
+      "recall_at_k": 1.0,
+      "returned": [
+        "long-document"
+      ]
+    },
+    {
+      "id": "multilingual",
+      "recall_at_k": 1.0,
+      "returned": [
+        "french"
+      ]
+    },
+    {
+      "id": "partial-supersession",
+      "recall_at_k": 1.0,
+      "returned": [
+        "partial-active",
+        "exact-code",
+        "leave-current"
+      ]
+    },
+    {
+      "id": "owner-private",
+      "recall_at_k": 1.0,
+      "returned": [
+        "private"
+      ]
+    },
+    {
+      "id": "cross-tenant",
+      "recall_at_k": null,
+      "returned": []
+    },
+    {
+      "id": "connector-owner-not-member",
+      "recall_at_k": null,
+      "returned": []
+    },
+    {
+      "id": "injection-is-data",
+      "recall_at_k": 1.0,
+      "returned": [
+        "injection"
+      ]
+    },
+    {
+      "id": "no-evidence",
+      "recall_at_k": null,
+      "returned": []
+    }
+  ],
+  "dataset_sha256": "452ee8a8ef27378c0a316ccf9efc6db272f01b659ffe9d9941ea85221eaa1e20",
+  "forbidden_evidence_count": 0,
+  "index_version": "none",
+  "invalid_citation_count": 0,
+  "k": 3,
+  "model_version": "none",
+  "processing_version": "fixture-text-v1",
+  "prompt_version": "none",
+  "quality_target_met": true,
+  "recall_at_k": 1.0,
+  "runner_sha256": "05544c456fa8d5cc92441de48848a473446a25023f6a4cc302a58b7d7179d068",
+  "split": "heldout"
+}

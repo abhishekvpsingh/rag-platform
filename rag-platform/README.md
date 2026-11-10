@@ -85,6 +85,22 @@ pnpm --filter @rag-platform/web start --port 3000
 
 This is a local build check, not a hardened production deployment. Unit/API tests use synthetic data and need no model or storage credentials. GitHub Actions runs documentation, backend, frontend, and a final **CI Gate** on every relevant PR/push. Runtime Integration exercises authenticated dependencies, persistence, and recovery; product security/evaluation checks arrive with their features. These checks do not certify a production RAG system.
 
+## Offline evaluation baseline
+
+Run from this directory, with no services or credentials:
+
+```bash
+PYTHONPATH=services/api/src uv run --frozen python -m rag_api.evaluation
+PYTHONPATH=services/api/src uv run --frozen python -m rag_api.evaluation --split tuning
+PYTHONPATH=services/api/src uv run --frozen python -m rag_api.evaluation --benchmark
+```
+
+The first command emits a deterministic JSON report and exits nonzero if the
+fixture recall/citation/access gates fail. `--benchmark` adds 100 warm serial
+full-split timings; timing is not a CI gate. The runner is a reference fixture
+baseline, not implemented product retrieval, authorization, or answer generation.
+See [workload and targets](tests/fixtures/evaluation/README.md).
+
 ## Layout
 
 | Directory | Responsibility |

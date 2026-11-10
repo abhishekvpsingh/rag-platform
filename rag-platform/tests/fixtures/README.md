@@ -1,3 +1,5 @@
-# tests/fixtures
+# Synthetic fixtures
 
-Synthetic, non-sensitive test corpora (T003). No implementation is claimed by this directory placeholder.
+The [versioned evaluation corpus](evaluation/README.md) contains invented policy,
+access-control, temporal, multilingual, long-document, injection, and structured
+numerical cases. It uses no private source data or external credentials.
