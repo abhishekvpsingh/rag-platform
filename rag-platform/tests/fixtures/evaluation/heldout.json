@@ -1,0 +1,176 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "id": "historical-leave",
+      "tenant": "tenant-a",
+      "actor": "member-a",
+      "as_of": "2024-06-01",
+      "query": "annual leave allowance",
+      "expected": [
+        "leave-old"
+      ],
+      "forbidden": [
+        "leave-current",
+        "leave-future"
+      ],
+      "behavior": "answer"
+    },
+    {
+      "id": "future-leave",
+      "tenant": "tenant-a",
+      "actor": "member-a",
+      "as_of": "2028-06-01",
+      "query": "annual leave allowance",
+      "expected": [
+        "leave-future"
+      ],
+      "forbidden": [
+        "leave-old",
+        "leave-current"
+      ],
+      "behavior": "answer"
+    },
+    {
+      "id": "regional-excluded",
+      "tenant": "tenant-a",
+      "actor": "member-a",
+      "as_of": "2026-06-01",
+      "query": "Ontario statutory wellness",
+      "expected": [],
+      "forbidden": [
+        "regional"
+      ],
+      "behavior": "abstain",
+      "region": "US-CA"
+    },
+    {
+      "id": "conflicting-rates",
+      "tenant": "tenant-a",
+      "actor": "member-a",
+      "as_of": "2026-06-01",
+      "query": "mileage reimbursement rate",
+      "expected": [
+        "conflict-a",
+        "conflict-b"
+      ],
+      "forbidden": [],
+      "behavior": "conflict"
+    },
+    {
+      "id": "long-locator",
+      "tenant": "tenant-a",
+      "actor": "member-a",
+      "as_of": "2026-06-01",
+      "query": "unique sabbatical entitlement",
+      "expected": [
+        "long-document"
+      ],
+      "forbidden": [],
+      "behavior": "answer"
+    },
+    {
+      "id": "multilingual",
+      "tenant": "tenant-a",
+      "actor": "member-a",
+      "as_of": "2026-06-01",
+      "query": "congé annuel jours",
+      "expected": [
+        "french"
+      ],
+      "forbidden": [],
+      "behavior": "answer"
+    },
+    {
+      "id": "partial-supersession",
+      "tenant": "tenant-a",
+      "actor": "member-a",
+      "as_of": "2026-06-01",
+      "query": "home office equipment allowance",
+      "expected": [
+        "partial-active"
+      ],
+      "forbidden": [
+        "partial-superseded"
+      ],
+      "behavior": "answer"
+    },
+    {
+      "id": "owner-private",
+      "tenant": "tenant-a",
+      "actor": "owner-a",
+      "as_of": "2026-06-01",
+      "query": "restricted salary figure",
+      "expected": [
+        "private"
+      ],
+      "forbidden": [
+        "other-tenant",
+        "stale",
+        "unknown",
+        "revoked",
+        "deleted",
+        "corrupt"
+      ],
+      "behavior": "answer"
+    },
+    {
+      "id": "cross-tenant",
+      "tenant": "tenant-c",
+      "actor": "member-a",
+      "as_of": "2026-06-01",
+      "query": "restricted salary figure",
+      "expected": [],
+      "forbidden": [
+        "private",
+        "other-tenant",
+        "stale",
+        "unknown",
+        "revoked",
+        "deleted",
+        "corrupt"
+      ],
+      "behavior": "abstain"
+    },
+    {
+      "id": "connector-owner-not-member",
+      "tenant": "tenant-a",
+      "actor": "new-member",
+      "as_of": "2026-06-01",
+      "query": "restricted salary figure",
+      "expected": [],
+      "forbidden": [
+        "private",
+        "other-tenant",
+        "stale",
+        "unknown",
+        "revoked",
+        "deleted",
+        "corrupt"
+      ],
+      "behavior": "abstain"
+    },
+    {
+      "id": "injection-is-data",
+      "tenant": "tenant-a",
+      "actor": "member-a",
+      "as_of": "2026-06-01",
+      "query": "injection sample untrusted",
+      "expected": [
+        "injection"
+      ],
+      "forbidden": [],
+      "behavior": "abstain"
+    },
+    {
+      "id": "no-evidence",
+      "tenant": "tenant-a",
+      "actor": "member-a",
+      "as_of": "2026-06-01",
+      "query": "zygomorphic quasar observatory",
+      "expected": [],
+      "forbidden": [],
+      "behavior": "abstain"
+    }
+  ]
+}
