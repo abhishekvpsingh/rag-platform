@@ -23,7 +23,7 @@ Error envelope: `code`, safe `message`, `request_id`, optional field errors and 
 
 ## Implemented process health
 
-`GET /health/live` reports process liveness. `GET /health/ready` returns 200 only when all five runtime dependency adapters (PostgreSQL, RabbitMQ, OpenSearch, artifacts, worker) are configured and pass bounded concurrent checks. Missing adapters return 503 with `not_configured`; failed or timed-out adapters return 503 with `unavailable`. Responses include dependency names/statuses and exclude connection URLs, credentials, and exception details. These public process endpoints do not establish tenant authorization or knowledge availability. The initial T002 increment defines the probe interface but does not wire live adapters, so the current application truthfully returns `not_configured`.
+`GET /health/live` reports process liveness. `GET /health/ready` returns 200 only when all five runtime dependency adapters (PostgreSQL, RabbitMQ, OpenSearch, artifacts, worker) are configured and pass bounded concurrent checks. Missing adapters return 503 with `not_configured`; failed or timed-out adapters return 503 with `unavailable`. Responses include dependency names/statuses and exclude connection URLs, credentials, and exception details. These public process endpoints do not establish tenant authorization or knowledge availability. The configured Compose entry point (`runtime_app --factory`) wires live adapters and fails startup on invalid settings. The lightweight `app` entry point remains explicitly unconfigured and returns `not_configured`. The worker probe performs a targeted broker round trip; TLS search validates its local CA and hostname.
 
 ## Long-running work
 

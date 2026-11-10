@@ -13,7 +13,7 @@
 | Models | Provider adapters; initial OpenAI-compatible text/embedding integration and deterministic test doubles |
 | Deployment | Docker Compose; Kubernetes after local contracts are stable |
 
-These are accepted implementation defaults. The API/web foundation is implemented first; stateful services and adapters arrive in later tasks. Consult PROGRESS.md for actual implementation status. Benchmark OpenSearch permission filtering and hybrid retrieval before claiming production capacity. Do not introduce a second vector backend without evidence and a decision record.
+These are accepted implementation defaults. T002 adds the single-node Compose runtime and typed extension boundaries; product adapters, authorization, and durable application jobs arrive in their later tasks. Consult PROGRESS.md for actual implementation status. Benchmark OpenSearch permission filtering and hybrid retrieval before claiming production capacity. Do not introduce a second vector backend without evidence and a decision record.
 
 ## Boundaries and data flow
 

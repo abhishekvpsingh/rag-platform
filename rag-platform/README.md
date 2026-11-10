@@ -83,7 +83,7 @@ For manual production-build smoke testing:
 pnpm --filter @rag-platform/web start --port 3000
 ```
 
-This is a local build check, not a hardened production deployment. Unit/API tests use synthetic data and need no model or storage credentials. GitHub Actions runs documentation, backend, frontend, and a final **CI Gate** on every relevant PR/push. Full integration/security/evaluation checks will be added with their features; current smoke tests do not certify a production RAG system.
+This is a local build check, not a hardened production deployment. Unit/API tests use synthetic data and need no model or storage credentials. GitHub Actions runs documentation, backend, frontend, and a final **CI Gate** on every relevant PR/push. Runtime Integration exercises authenticated dependencies, persistence, and recovery; product security/evaluation checks arrive with their features. These checks do not certify a production RAG system.
 
 ## Layout
 
@@ -101,4 +101,4 @@ Operational logs, `.env` files, generated builds, indexes, dependencies, and pri
 
 ## Repository merge controls
 
-The CI workflow is committed, but repository settings require separate administration. Under GitHub Settings → Rules → Rulesets (or Branches), protect `main`: require a PR, require the status check **CI Gate**, require branches up to date or a supported merge queue, disallow force pushes/deletion, and configure reviews as desired. Under Settings → General → Pull Requests, enable auto-merge if desired. These settings have not been applied or verified by this implementation; the available connector cannot update repository rules. An active development session can merge only after the documented gate passes and repository rules permit it.
+The CI workflow is committed, but repository settings require separate administration. Under GitHub Settings → Rules → Rulesets (or Branches), protect `main`: require a PR, require the status check **CI Gate**, require branches up to date or a supported merge queue, disallow force pushes/deletion, and configure reviews as desired. Under Settings → General → Pull Requests, enable auto-merge if desired. Inspection on 2026-11-10 found no classic main protection and an empty repository ruleset list. No repository controls were changed during T002. An active development session can merge only after the documented gate passes and repository rules permit it.

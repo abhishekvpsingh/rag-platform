@@ -9,7 +9,7 @@ mv config/opensearch-security/internal_users.local config/opensearch-security/in
 for name in root-ca.pem esnode.pem esnode-key.pem kirk.pem kirk-key.pem; do
   cp "/local-tls/$name" "config/$name"
 done
-sed -i 's/transport.ssl.enforce_hostname_verification: false/transport.ssl.enforce_hostname_verification: true/; s/plugins.security.allow_unsafe_democertificates: true/plugins.security.allow_unsafe_democertificates: false/' config/opensearch.yml
+sed -i 's/CN=kirk,OU=client,O=client,L=test,C=de/C=de,L=test,O=client,OU=client,CN=kirk/; s/transport.ssl.enforce_hostname_verification: false/transport.ssl.enforce_hostname_verification: true/; s/plugins.security.allow_unsafe_democertificates: true/plugins.security.allow_unsafe_democertificates: false/' config/opensearch.yml
 chmod 700 config
 chmod 600 config/*.pem
 export DISABLE_INSTALL_DEMO_CONFIG=true

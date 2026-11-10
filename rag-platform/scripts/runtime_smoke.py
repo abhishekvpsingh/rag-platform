@@ -72,5 +72,5 @@ if __name__ == "__main__":
         asyncio.run(main(sys.argv[1]))
     except Exception:
         raise SystemExit(
-            "Runtime persistence verification failed; broker_connection details redacted"
+            "Runtime persistence verification failed; connection details redacted"
         ) from None

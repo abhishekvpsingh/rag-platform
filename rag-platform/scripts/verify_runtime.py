@@ -59,6 +59,14 @@ def main() -> None:
     compose("restart")
     ready()
     compose("exec", "-T", "api", "python", "scripts/runtime_smoke.py", "read")
+    compose("stop", "--timeout", "30")
+    stopped_ids = subprocess.check_output(
+        ["docker", "compose", "ps", "--all", "-q"], cwd=ROOT, text=True
+    ).split()
+    stopped = json.loads(subprocess.check_output(["docker", "inspect", *stopped_ids]))
+    assert len(stopped) == 6
+    assert all(not item["State"]["Running"] and not item["State"]["OOMKilled"] for item in stopped)
+    assert all(item["State"]["ExitCode"] in (0, 143) for item in stopped)
     compose("down", "--timeout", "30")
     compose("up", "-d", "--wait", "--wait-timeout", "300")
     ready()
