@@ -453,3 +453,181 @@ footer {
     scroll-behavior: auto;
   }
 }
+
+/* Shared workspace tokens and accessible navigation. */
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --text-small: 0.875rem;
+  --text-body: 1rem;
+  --focus: #b06400;
+  --shadow: 0 8px 28px #17323408;
+  --motion: 120ms;
+  --navy: #142b3a;
+}
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 4px;
+}
+.sidebar :focus-visible {
+  outline-color: #f4c363;
+}
+.content {
+  flex: 1;
+  min-width: 0;
+  max-width: 1450px;
+  padding: 0 var(--space-12);
+  display: flex;
+  flex-direction: column;
+}
+.main {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+}
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-top: var(--space-4);
+}
+.sidebar nav a {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: 9px;
+  text-decoration: none;
+  font-size: var(--text-small);
+  transition: background var(--motion);
+}
+.sidebar nav a:hover {
+  background: #233f4a;
+}
+.sidebar nav a[aria-current="page"] {
+  background: #294b56;
+  box-shadow: inset 3px 0 #b8e2c6;
+  font-weight: 700;
+}
+.sidebar nav a span {
+  width: 18px;
+  text-align: center;
+  color: #c4e9ce;
+}
+.page-heading {
+  padding: var(--space-12) 0 var(--space-8);
+  max-width: 760px;
+}
+.page-heading h1 {
+  margin: var(--space-3) 0 var(--space-4);
+}
+.page-heading p {
+  color: var(--muted);
+  font-size: var(--text-body);
+}
+.state-panel {
+  border: 1px solid var(--line);
+  background: var(--white);
+  padding: var(--space-8);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin: var(--space-4) 0 var(--space-8);
+}
+.state-label {
+  display: inline-block;
+  border-radius: 20px;
+  padding: var(--space-1) var(--space-3);
+  background: #edf3ef;
+  color: #365749;
+  font-size: var(--text-small);
+}
+.state-panel h2 {
+  margin-top: var(--space-6);
+  font-size: 24px;
+}
+.state-copy {
+  max-width: 720px;
+  color: var(--muted);
+  font-size: var(--text-body);
+}
+.state-failed,
+.state-forbidden {
+  border-color: #b96a62;
+}
+.state-failed .state-label,
+.state-forbidden .state-label {
+  color: #7e3029;
+  background: #fff0ed;
+}
+.state-partial .state-label,
+.state-stale .state-label {
+  color: #76500a;
+  background: #fff4d9;
+}
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+  gap: var(--space-6);
+  padding-bottom: var(--space-12);
+}
+.card-grid h2 {
+  font-size: 18px;
+  margin: 0 0 var(--space-3);
+}
+.card-grid p {
+  font-size: var(--text-small);
+}
+button.primary-link {
+  border: 0;
+  font: inherit;
+  cursor: pointer;
+}
+.primary-link {
+  min-height: 44px;
+}
+@media (max-width: 1100px) {
+  .content {
+    padding: 0 28px;
+  }
+}
+@media (max-width: 760px) {
+  .content {
+    padding: 0 22px;
+  }
+  .sidebar nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+  }
+  .sidebar nav a {
+    padding: var(--space-2) var(--space-3);
+  }
+  .sidebar nav a span {
+    display: none;
+  }
+  .sidebar nav a[aria-current="page"] {
+    box-shadow: inset 0 -3px #b8e2c6;
+  }
+  .page-heading {
+    padding: var(--space-8) 0 var(--space-4);
+  }
+  .state-panel {
+    padding: var(--space-6);
+  }
+  .state-panel h2 {
+    font-size: 21px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion: 0ms;
+  }
+}

@@ -2,7 +2,7 @@
 
 ## Current state
 
-T001 is complete and merged through [PR #2](https://github.com/abhishekvpsingh/rag-platform/pull/2). Mac local setup is verified. T002 is merged through PR #3 as c898645; the owner reports resolving the scanner issue manually. Post-merge CI is being verified. T003 is complete and merged through PR #4. T004 identity implementation and local acceptance are complete; PR #5 verification/merge is in progress. No storage connectors, ingestion, retrieval, or answers exist yet.
+T001 is complete and merged through [PR #2](https://github.com/abhishekvpsingh/rag-platform/pull/2). Mac local setup is verified. T002 is merged through PR #3 as c898645; the owner reports resolving the scanner issue manually. Post-merge CI is being verified. T003 is complete and merged through PR #4. T004 is complete and merged via PR #5 as daaa925. T005 web shell is in progress. No storage connectors, ingestion, retrieval, or answers exist yet.
 
 ## Task status
 
@@ -11,23 +11,24 @@ T001 is complete and merged through [PR #2](https://github.com/abhishekvpsingh/r
 | T001 | Complete, merged | [Verification record](verification/T001.md), [PR #2](https://github.com/abhishekvpsingh/rag-platform/pull/2), merge `ada2f08` |
 | T002 | Complete, merged via PR #3 | [Verification evidence](verification/T002.md); merge c898645 |
 | T003 | Complete, merged via PR #4 | [Verification](verification/T003.md) |
-| T004 | Acceptance passed; merge verification | [Verification](verification/T004.md); PR #5 |
-| T005–T025 | Not started | Specifications only |
+| T004 | Complete, merged | [Verification](verification/T004.md); PR #5, daaa925 |
+| T005 | Local acceptance passed; CI pending | [Verification](verification/T005.md) |
+| T006–T025 | Not started | Specifications only |
 
 ## Development checkpoint
 
-- Updated at: 2026-11-14T04:28:51.538239+00:00.
-- Session state: ready-to-merge, subject to latest-head CI.
-- Active task: T004 identity/persistence/secrets; implementation and acceptance passed.
-- Feature branch: feature/T004-identity-foundation; base main c898645cd7d62e2c2a78c7165490dfb14a5c977a.
-- Last verified implementation: 77bb4c7, pushed and confirmed on [PR #5](https://github.com/abhishekvpsingh/rag-platform/pull/5), ready for review.
-- Changed files: this checkpoint and T004 verification record only since tested implementation.
-- Completed: migrations; singleton local bootstrap; Argon2 passwords; hashed expiring/revocable sessions; HTTPS cookie/Origin/CSRF API; tenant-scoped connections and owner-only source authorization; AES-GCM credential binding/rotation; bounded audit events.
-- Checks: frozen sync, Ruff/format, mypy, 63 tests, docs and offline evaluation passed locally. Seven PostgreSQL security tests, migration rollback/reapply/drift and synthetic dump/restore passed. Both GitHub runs 43555383852 and 43555387014 passed all five checks at 77bb4c7; GitGuardian also passed. See [evidence](verification/T004.md).
-- Running operations: none at checkpoint; documentation commit will trigger fresh CI.
-- Next action: push this checkpoint, verify latest-head checks and merge PR #5 with expected SHA; then select T005 web shell from updated main.
-- Blockers: none. No external source accounts needed for T004.
-- Limits: operator-configured HTTPS; no login UI, connectors or shared ACL claims. Shared limiter, RLS, multi-tenant selection and bulk key rotation remain documented later work. No production recovery claim.
+- Updated at: 2026-11-14T04:40:24.629761+00:00.
+- Session state: in-progress; T005 local acceptance passed, publication/CI pending.
+- Active task: T005 responsive web shell and navigation.
+- Feature branch: feature/T005-web-shell; base main daaa925c045e962ef56e2a854a12b12840d9b9aa.
+- Last verified merge: T004 [PR #5](https://github.com/abhishekvpsingh/rag-platform/pull/5), merged 2026-11-14T04:33:19Z as daaa925. Both final head CI gates and GitGuardian passed at 86c4266; all post-merge main CI checks passed too.
+- Changed files: shell/layout/navigation, six route screens, shared state presentation, loading/error/404 boundaries, CSS tokens, component/browser tests and documentation. Only task-owned edits; screenshots stay ignored.
+- Completed: real route navigation with active-page/skip/focus semantics; responsive mobile/desktop; honest unavailable states without fake controls/metrics; working route error retry.
+- Checks: pnpm format:check, lint, typecheck, build passed; 4 component tests and 6 desktop/mobile browser tests passed. Every route and overflow assertion checked. Desktop/mobile Settings screenshots visually inspected. Docs and diff checks passed. See [T005 evidence](verification/T005.md).
+- Running operations: none locally. Commit/push will start GitHub checks.
+- Next action: commit/push T005, open PR, verify latest-head checks, merge with expected SHA. Next ready task after T005 is T006 durable work engine.
+- Blockers: none.
+- Limits: no login/settings forms, provider connections, retrieval or live telemetry; no full WCAG certification. Future data workflows require their own state/authorization checks.
 
 ## Historical T002 integration checkpoint
 

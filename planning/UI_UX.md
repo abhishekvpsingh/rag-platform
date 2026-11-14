@@ -32,3 +32,15 @@ Graph and distributed mode are off by default. A recommendation card shows evide
 ## Verification
 
 Browser checks cover onboarding, OAuth callback errors, ingestion progress, answer/citation access, policy conflict, revoked access, settings validation, and upgrade previews. Test narrow and wide viewports and keyboard flows. Use synthetic fixtures for screenshots; label demonstration data clearly.
+
+## T005 shell implementation
+
+The shell provides seven routes including Overview and Quality, persistent
+keyboard-accessible navigation, active-page labels, a skip link, responsive
+layout and shared color/spacing/type/focus/motion tokens. StatePanel defines
+loading, empty, partial, stale, forbidden, failed, retrying and success
+presentation; current data screens show honest unavailable states. Next loading
+and error boundaries provide status announcements and a real route retry.
+No authenticated data or configuration form is connected yet. Browser checks
+cover every route, desktop/mobile overflow, keyboard navigation and 404 recovery;
+full WCAG audit and data-flow tests remain later acceptance work.

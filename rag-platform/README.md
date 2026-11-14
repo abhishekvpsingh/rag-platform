@@ -1,6 +1,6 @@
 # RAG Platform application
 
-The development foundation includes a runnable Next.js overview and FastAPI service, pinned dependency lockfiles, offline smoke tests, and CI. **Storage connectors, ingestion, retrieval, and answers are not implemented yet. Identity APIs and local owner setup are available with explicit HTTPS configuration.** Do not connect private company data to this foundation or expose it publicly.
+The development foundation includes a responsive Next.js workspace shell and FastAPI service, pinned dependency lockfiles, offline smoke tests, and CI. **Storage connectors, ingestion, retrieval, and answers are not implemented yet. Identity APIs and local owner setup are available with explicit HTTPS configuration.** Do not connect private company data to this foundation or expose it publicly.
 
 ## Prerequisites
 
@@ -44,7 +44,7 @@ Start the web application in another terminal from the same directory:
 pnpm dev
 ```
 
-Open `http://127.0.0.1:3000`. API docs are at `http://127.0.0.1:8000/docs`; liveness is `GET /health/live`; `GET /api/v1/capabilities` truthfully reports unavailable features. These are public, non-sensitive endpoints. Liveness does not imply dependency readiness. `GET /health/ready` returns **503 / not_configured** in this lightweight mode; the configured Compose runtime probes all dependencies. The overview does not call the API yet; no CORS exception is needed.
+Open `http://127.0.0.1:3000`. API docs are at `http://127.0.0.1:8000/docs`; liveness is `GET /health/live`; `GET /api/v1/capabilities` truthfully reports unavailable features. These are public, non-sensitive endpoints. Liveness does not imply dependency readiness. `GET /health/ready` returns **503 / not_configured** in this lightweight mode; the configured Compose runtime probes all dependencies. The web shell includes Overview, Ask, Sources, Knowledge, Quality, Operations and Settings. Navigation works on desktop and mobile. These availability screens do not call the API or display tenant data yet; no CORS exception is needed.
 
 Stop either process with Ctrl+C. These lightweight commands do not start stateful services. Use Compose below for the complete development runtime. See the [identity setup](infra/IDENTITY.md) for migrations, owner bootstrap and HTTPS sessions. OAuth remains later work.
 
@@ -106,7 +106,7 @@ See [workload and targets](tests/fixtures/evaluation/README.md).
 
 | Directory | Responsibility |
 |---|---|
-| `apps/web/` | Next.js development overview and frontend/browser tests |
+| `apps/web/` | Responsive workspace shell, availability screens and browser tests |
 | `services/api/` | FastAPI process metadata and capabilities |
 | `services/workers/` | Worker runtime documentation; application jobs arrive in T006 |
 | `packages/connectors/` | Reserved for connector contracts/adapters |
