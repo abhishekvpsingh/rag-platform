@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { isSection, sections } from "../sections";
+import { JobsPanel } from "../jobs-panel";
 import { StatePanel } from "../state-panel";
 
 type Props = { params: Promise<{ section: string }> };
@@ -25,13 +26,17 @@ export default async function SectionPage({ params }: Props) {
         <h1>{view.title}</h1>
         <p>{view.description}</p>
       </header>
-      <StatePanel state="empty" title={view.emptyTitle}>
-        <p>{view.emptyText}</p>
-        <Link className="primary-link" href={view.nextHref}>
-          {view.nextLabel}
-          <span aria-hidden="true">→</span>
-        </Link>
-      </StatePanel>
+      {section === "operations" ? (
+        <JobsPanel />
+      ) : (
+        <StatePanel state="empty" title={view.emptyTitle}>
+          <p>{view.emptyText}</p>
+          <Link className="primary-link" href={view.nextHref}>
+            {view.nextLabel}
+            <span aria-hidden="true">→</span>
+          </Link>
+        </StatePanel>
+      )}
       <section className="card-grid" aria-label="Capabilities and availability">
         {view.cards.map((card) => (
           <article className="step-card" key={card.title}>

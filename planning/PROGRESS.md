@@ -2,7 +2,7 @@
 
 ## Current state
 
-T001 is complete and merged through [PR #2](https://github.com/abhishekvpsingh/rag-platform/pull/2). Mac local setup is verified. T002 is merged through PR #3 as c898645; the owner reports resolving the scanner issue manually. Post-merge CI is being verified. T003 is complete and merged through PR #4. T004 is complete and merged via PR #5 as daaa925. T005 web shell is in progress. No storage connectors, ingestion, retrieval, or answers exist yet.
+T001 is complete and merged through [PR #2](https://github.com/abhishekvpsingh/rag-platform/pull/2). Mac local setup is verified. T002 is merged through PR #3 as c898645; the owner reports resolving the scanner issue manually. Post-merge CI passed. T003 is complete and merged through PR #4. T004 is complete and merged via PR #5 as daaa925. T005 is complete and merged via PR #6 as 10641ce. T006 durable work engine is in progress. No storage connectors, ingestion, retrieval, or answers exist yet.
 
 ## Task status
 
@@ -12,23 +12,24 @@ T001 is complete and merged through [PR #2](https://github.com/abhishekvpsingh/r
 | T002 | Complete, merged via PR #3 | [Verification evidence](verification/T002.md); merge c898645 |
 | T003 | Complete, merged via PR #4 | [Verification](verification/T003.md) |
 | T004 | Complete, merged | [Verification](verification/T004.md); PR #5, daaa925 |
-| T005 | Local acceptance passed; CI pending | [Verification](verification/T005.md) |
-| T006–T025 | Not started | Specifications only |
+| T005 | Complete, merged | [Verification](verification/T005.md); PR #6, 10641ce |
+| T006 | In progress | Durable work design and schema implementation |
+| T007–T025 | Not started | Specifications only |
 
 ## Development checkpoint
 
-- Updated at: 2026-11-14T04:41:55.611435+00:00.
-- Session state: ready-to-merge subject to latest-head CI.
-- Active task: T005 responsive web shell and navigation.
-- Feature branch: feature/T005-web-shell; base main daaa925c045e962ef56e2a854a12b12840d9b9aa.
-- Last verified merge: T004 [PR #5](https://github.com/abhishekvpsingh/rag-platform/pull/5), merged 2026-11-14T04:33:19Z as daaa925. Both final head CI gates and GitGuardian passed at 86c4266; all post-merge main CI checks passed too.
-- Last verified implementation/checkpoint: b42d0f8, confirmed pushed to origin/feature/T005-web-shell and [PR #6](https://github.com/abhishekvpsingh/rag-platform/pull/6). This progress reconciliation is the only subsequent change; screenshots remain ignored.
-- Completed: real route navigation with active-page/skip/focus semantics; responsive mobile/desktop; honest unavailable states without fake controls/metrics; working route error retry.
-- Checks: pnpm format:check, lint, typecheck, build passed; 4 component tests and 6 desktop/mobile browser tests passed. Every route and overflow assertion checked. Desktop/mobile Settings screenshots visually inspected. Docs and diff checks passed. See [T005 evidence](verification/T005.md).
-- Running operations: GitHub CI for PR #6. Documentation and GitGuardian passed at initial inspection; remaining checks pending. No local servers or test containers left running.
-- Next action: verify latest-head PR #6 checks and merge with expected SHA; reconcile merge status from GitHub before new work. Next ready task after T005 is T006 durable work engine.
-- Blockers: none.
-- Limits: no login/settings forms, provider connections, retrieval or live telemetry; no full WCAG certification. Future data workflows require their own state/authorization checks.
+- Updated at: 2026-11-14T21:30:40.643275+00:00.
+- Session state: in-progress.
+- Active task: T006 durable work engine; implementation and local acceptance complete; remote CI pending.
+- Feature branch: feature/T006-durable-work; base main 10641cea7b290c7f537cd2b830e55716081b8931.
+- Last verified implementation: T005 PR #6 merged as 10641ce; post-merge CI passed. T006 working tree is being committed; no remote PR yet.
+- Changed files: job schema/service/dispatcher/handler/API, migration 0002, Operations status/proxy, tests, Compose jobs profile, ADR 0005, architecture guide and runtime documentation. All changes are task-owned.
+- Design: PostgreSQL owns jobs/attempts and transactional outbox; opaque queue IDs; leases and generation/tombstone checks gate publication. Diagnostic execution precedes real ingestion.
+- Checks: Ruff and mypy passed; full backend 73 passed/1 SQLite concurrency skip; real PostgreSQL suite 18 passed. Web lint/typecheck/build and 7 unit tests passed; 10 desktop/mobile browser checks passed. Real RabbitMQ outage replay, duplicate delivery, worker kill, deletion/cancellation and migration/restore passed in the earlier run; final run with both additional PostgreSQL failure/revocation tests passed. See [T006 evidence](verification/T006.md).
+- Running operations: local checks completed; remote CI not started.
+- Next action: finish verifier, publish T006 PR, require all exact-head CI/security checks before merge.
+- Blockers: none; no external source/model account required.
+- Limits: real diagnostic task is not ingestion. Browser status scenarios use synthetic HTTP fixtures. Worker-kill acceptance uses a real solo worker; Compose uses prefork. No production/cluster validation.
 
 ## Historical T002 integration checkpoint
 

@@ -13,7 +13,7 @@
 | Models | Provider adapters; initial OpenAI-compatible text/embedding integration and deterministic test doubles |
 | Deployment | Docker Compose; Kubernetes after local contracts are stable |
 
-These are accepted implementation defaults. T002 adds the single-node Compose runtime and typed extension boundaries; product adapters, authorization, and durable application jobs arrive in their later tasks. Consult PROGRESS.md for actual implementation status. Benchmark OpenSearch permission filtering and hybrid retrieval before claiming production capacity. Do not introduce a second vector backend without evidence and a decision record.
+These are accepted implementation defaults. T002 adds the single-node Compose runtime and typed extension boundaries; T004 adds identity/authorization foundations and T006 adds durable application jobs. Product ingestion/retrieval adapters remain later work. Consult PROGRESS.md for actual implementation status. Benchmark OpenSearch permission filtering and hybrid retrieval before claiming production capacity. Do not introduce a second vector backend without evidence and a decision record.
 
 ## Boundaries and data flow
 
@@ -44,3 +44,12 @@ A failed optional graph service falls back to authorized hybrid retrieval with v
 ## Design validation
 
 Verify outbox recovery, duplicate delivery, stale generation suppression, partial index builds, source permission revocation, and backup restoration before production release. See [data model](DATA_MODEL.md), [ingestion](INGESTION.md), and [evaluation](TESTING_AND_EVALUATION.md).
+
+## Implemented work engine
+
+T006 uses PostgreSQL jobs, attempts, targets, immutable results and an outbox;
+Celery consumes opaque IDs from the maintenance queue. Lease tokens and target
+generations gate completion. The opt-in dispatcher publishes with confirms and
+recovers expired work. The first handler is a bounded diagnostic, not ingestion.
+See [decision 0005](decisions/0005-durable-jobs.md) and the
+[job runbook](../rag-platform/infra/JOBS.md).

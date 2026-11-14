@@ -5,6 +5,7 @@ import os
 from alembic import context
 from rag_api.identity.models import Base
 from rag_api.identity.service import database_engine
+from rag_api.jobs import models as job_models  # noqa: F401
 
 engine = database_engine(os.environ["RAG_DATABASE_URL"])
 with engine.connect() as connection:

@@ -88,7 +88,7 @@ services:
       context: .
       dockerfile: infra/Dockerfile.api
     environment: *runtime
-    command: [celery, -A, rag_api.worker:app, worker, --loglevel=WARNING, --concurrency=1, --hostname=runtime@worker]
+    command: [celery, -A, rag_api.worker:app, worker, --loglevel=WARNING, --concurrency=1, --hostname=runtime@worker, "--queues=runtime,maintenance"]
     volumes:
       - artifacts:/var/lib/rag/artifacts
       - ./.data/tls/root-ca.pem:/local-tls/root-ca.pem:ro
@@ -101,7 +101,21 @@ services:
       retries: 12
     stop_grace_period: 30s
     mem_limit: 512m
+  dispatcher:
+    profiles: [jobs]
+    build:
+      context: .
+      dockerfile: infra/Dockerfile.api
+    environment: *runtime
+    command: [python, -m, rag_api.jobs.dispatcher]
+    depends_on:
+      postgres: {condition: service_healthy}
+      rabbitmq: {condition: service_healthy}
+    mem_limit: 256m
+    stop_grace_period: 15s
   web:
+    environment:
+      RAG_INTERNAL_API_URL: http://api:8000
     build:
       context: .
       dockerfile: infra/Dockerfile.web

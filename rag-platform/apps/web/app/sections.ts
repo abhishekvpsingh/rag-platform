@@ -91,7 +91,7 @@ export const sections = {
     cards: [
       {
         title: "Work and recovery",
-        text: "Durable job progress, retry and cancellation are planned. No running jobs or health measurements are implied here.",
+        text: "Durable worker checks report their actual state and progress. Owner-scoped APIs support cancellation and bounded replay; document ingestion is not implemented yet.",
       },
       {
         title: "Capacity with evidence",
