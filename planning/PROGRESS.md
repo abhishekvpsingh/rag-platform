@@ -17,16 +17,16 @@ T001 is complete and merged through [PR #2](https://github.com/abhishekvpsingh/r
 
 ## Development checkpoint
 
-- Updated at: 2026-11-14T04:40:24.629761+00:00.
-- Session state: in-progress; T005 local acceptance passed, publication/CI pending.
+- Updated at: 2026-11-14T04:41:55.611435+00:00.
+- Session state: ready-to-merge subject to latest-head CI.
 - Active task: T005 responsive web shell and navigation.
 - Feature branch: feature/T005-web-shell; base main daaa925c045e962ef56e2a854a12b12840d9b9aa.
 - Last verified merge: T004 [PR #5](https://github.com/abhishekvpsingh/rag-platform/pull/5), merged 2026-11-14T04:33:19Z as daaa925. Both final head CI gates and GitGuardian passed at 86c4266; all post-merge main CI checks passed too.
-- Changed files: shell/layout/navigation, six route screens, shared state presentation, loading/error/404 boundaries, CSS tokens, component/browser tests and documentation. Only task-owned edits; screenshots stay ignored.
+- Last verified implementation/checkpoint: b42d0f8, confirmed pushed to origin/feature/T005-web-shell and [PR #6](https://github.com/abhishekvpsingh/rag-platform/pull/6). This progress reconciliation is the only subsequent change; screenshots remain ignored.
 - Completed: real route navigation with active-page/skip/focus semantics; responsive mobile/desktop; honest unavailable states without fake controls/metrics; working route error retry.
 - Checks: pnpm format:check, lint, typecheck, build passed; 4 component tests and 6 desktop/mobile browser tests passed. Every route and overflow assertion checked. Desktop/mobile Settings screenshots visually inspected. Docs and diff checks passed. See [T005 evidence](verification/T005.md).
-- Running operations: none locally. Commit/push will start GitHub checks.
-- Next action: commit/push T005, open PR, verify latest-head checks, merge with expected SHA. Next ready task after T005 is T006 durable work engine.
+- Running operations: GitHub CI for PR #6. Documentation and GitGuardian passed at initial inspection; remaining checks pending. No local servers or test containers left running.
+- Next action: verify latest-head PR #6 checks and merge with expected SHA; reconcile merge status from GitHub before new work. Next ready task after T005 is T006 durable work engine.
 - Blockers: none.
 - Limits: no login/settings forms, provider connections, retrieval or live telemetry; no full WCAG certification. Future data workflows require their own state/authorization checks.
 
