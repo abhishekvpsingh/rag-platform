@@ -13,21 +13,21 @@ T001 is complete and merged through [PR #2](https://github.com/abhishekvpsingh/r
 | T003 | Complete, merged via PR #4 | [Verification](verification/T003.md) |
 | T004 | Complete, merged | [Verification](verification/T004.md); PR #5, daaa925 |
 | T005 | Complete, merged | [Verification](verification/T005.md); PR #6, 10641ce |
-| T006 | In progress | Durable work design and schema implementation |
+| T006 | Implemented; CI pending | [Verification](verification/T006.md), [PR #7](https://github.com/abhishekvpsingh/rag-platform/pull/7) |
 | T007–T025 | Not started | Specifications only |
 
 ## Development checkpoint
 
-- Updated at: 2026-11-14T21:30:40.643275+00:00.
+- Updated at: 2026-11-14T21:32:13.723073+00:00.
 - Session state: in-progress.
 - Active task: T006 durable work engine; implementation and local acceptance complete; remote CI pending.
 - Feature branch: feature/T006-durable-work; base main 10641cea7b290c7f537cd2b830e55716081b8931.
-- Last verified implementation: T005 PR #6 merged as 10641ce; post-merge CI passed. T006 working tree is being committed; no remote PR yet.
+- Last verified implementation: T006 1683956ee28c6a302b41725a5edbce306538d998, confirmed pushed to origin/feature/T006-durable-work; [PR #7](https://github.com/abhishekvpsingh/rag-platform/pull/7). T005 post-merge CI passed.
 - Changed files: job schema/service/dispatcher/handler/API, migration 0002, Operations status/proxy, tests, Compose jobs profile, ADR 0005, architecture guide and runtime documentation. All changes are task-owned.
 - Design: PostgreSQL owns jobs/attempts and transactional outbox; opaque queue IDs; leases and generation/tombstone checks gate publication. Diagnostic execution precedes real ingestion.
 - Checks: Ruff and mypy passed; full backend 73 passed/1 SQLite concurrency skip; real PostgreSQL suite 18 passed. Web lint/typecheck/build and 7 unit tests passed; 10 desktop/mobile browser checks passed. Real RabbitMQ outage replay, duplicate delivery, worker kill, deletion/cancellation and migration/restore passed in the earlier run; final run with both additional PostgreSQL failure/revocation tests passed. See [T006 evidence](verification/T006.md).
-- Running operations: local checks completed; remote CI not started.
-- Next action: finish verifier, publish T006 PR, require all exact-head CI/security checks before merge.
+- Running operations: local checks completed; GitHub runs 43643271453 and 43643301566 started for 1683956. GitGuardian passed. This checkpoint commit requires its own exact-head CI.
+- Next action: inspect PR #7 checks on the latest head; fix failures if any, then expected-head squash merge only after all checks pass. Next development task is T007.
 - Blockers: none; no external source/model account required.
 - Limits: real diagnostic task is not ingestion. Browser status scenarios use synthetic HTTP fixtures. Worker-kill acceptance uses a real solo worker; Compose uses prefork. No production/cluster validation.
 
