@@ -63,7 +63,12 @@ services:
     build:
       context: .
       dockerfile: infra/Dockerfile.api
-    environment: *runtime
+    environment:
+      <<: *runtime
+      RAG_AUTH_ENABLED: ${RAG_AUTH_ENABLED:-false}
+      RAG_AUTH_ORIGIN: ${RAG_AUTH_ORIGIN:-}
+      RAG_CREDENTIAL_KEYS: ${RAG_CREDENTIAL_KEYS:-}
+      RAG_ACTIVE_CREDENTIAL_KEY: ${RAG_ACTIVE_CREDENTIAL_KEY:-}
     ports: ['127.0.0.1:${RAG_API_PORT:-8000}:8000']
     volumes:
       - artifacts:/var/lib/rag/artifacts

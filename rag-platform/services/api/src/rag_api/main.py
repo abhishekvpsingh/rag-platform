@@ -2,7 +2,8 @@
 
 from typing import Literal
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.exceptions import RequestValidationError
 from pydantic import BaseModel
 from starlette.responses import JSONResponse
 
@@ -29,6 +30,11 @@ def create_app(readiness: ReadinessChecker | None = None) -> FastAPI:
         version="0.1.0-dev",
         description="Development foundation. Source connections and answers are not available yet.",
     )
+
+    @app.exception_handler(RequestValidationError)
+    async def invalid_request(request: Request, error: RequestValidationError) -> JSONResponse:
+        # Validation details can contain raw password/token input.
+        return JSONResponse(status_code=422, content={"detail": "Invalid request"})
 
     @app.get("/health/live", response_model=HealthResponse, tags=["health"])
     def liveness() -> HealthResponse:
@@ -67,4 +73,12 @@ def runtime_app() -> FastAPI:
     from rag_api.runtime import RuntimeSettings
 
     settings = RuntimeSettings.from_env(os.environ)
-    return create_app(runtime_checker(settings, os.environ.get("RAG_SEARCH_CA")))
+    app = create_app(runtime_checker(settings, os.environ.get("RAG_SEARCH_CA")))
+    if os.environ.get("RAG_AUTH_ENABLED") == "true":
+        from rag_api.identity.cli import configured_origin, configured_service
+        from rag_api.identity.http import auth_router
+
+        app.include_router(
+            auth_router(configured_service(os.environ), configured_origin(os.environ))
+        )
+    return app

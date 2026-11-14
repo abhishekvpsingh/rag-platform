@@ -33,3 +33,11 @@ Record configuration changes, connections, authorization decisions, administrati
 ## Release gates
 
 Cross-tenant retrieval tests; connector-owner versus member tests; revoked groups and stale ACLs; citation/preview/history access; prompt injection; XSS; SSRF; malicious files; analytics escape attempts; secret scanning; dependency scanning; backup restoration with tombstone replay. Document remaining limitations and external security review status.
+
+## T004 implementation boundary
+
+See [identity runtime setup](../rag-platform/infra/IDENTITY.md) and
+[ADR 0004](decisions/0004-identity-foundation.md) for the implemented owner-only
+identity boundary, HTTPS configuration, local bootstrap, credential key rotation
+primitive, current rate-limit scope and recovery checks. Shared source access and
+provider-backed proof are not implemented by this foundation.

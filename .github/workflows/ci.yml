@@ -50,6 +50,7 @@ jobs:
       - run: uv run --frozen ruff format --check .
       - run: uv run --frozen mypy
       - run: uv run --frozen pytest
+      - run: PYTHONPATH=services/api/src uv run --frozen python scripts/verify_identity.py
       - run: PYTHONPATH=services/api/src uv run --frozen python -m rag_api.evaluation
 
   frontend:
