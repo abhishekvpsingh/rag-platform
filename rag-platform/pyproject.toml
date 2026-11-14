@@ -3,7 +3,14 @@ name = "rag-platform"
 version = "0.1.0.dev0"
 description = "Permission-aware connected knowledge platform"
 requires-python = ">=3.12,<3.13"
-dependencies = ["fastapi>=0.121,<1", "uvicorn>=0.38,<1"]
+dependencies = [
+    "aio-pika>=9.5,<10",
+    "celery>=5.5,<6",
+    "fastapi>=0.121,<1",
+    "httpx>=0.28,<1",
+    "psycopg[binary]>=3.2,<4",
+    "uvicorn>=0.38,<1",
+]
 
 [dependency-groups]
 dev = ["httpx>=0.28,<1", "mypy>=1.18,<2", "pytest>=8.4,<10", "ruff>=0.14,<1"]
@@ -29,3 +36,7 @@ python_version = "3.12"
 strict = true
 mypy_path = "services/api/src"
 files = ["services/api/src", "tests", "scripts"]
+
+[[tool.mypy.overrides]]
+module = ["celery", "celery.*"]
+ignore_missing_imports = true

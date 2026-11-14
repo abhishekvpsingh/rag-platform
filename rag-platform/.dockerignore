@@ -1,0 +1,14 @@
+.env*
+.data
+.artifacts
+.backups
+.logs
+.venv
+**/node_modules
+**/.next
+**/__pycache__
+**/.pytest_cache
+**/.mypy_cache
+**/.ruff_cache
+**/test-results
+**/playwright-report

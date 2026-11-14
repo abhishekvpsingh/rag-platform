@@ -4,6 +4,9 @@ from typing import Literal
 
 from fastapi import FastAPI
 from pydantic import BaseModel
+from starlette.responses import JSONResponse
+
+from rag_api.readiness import ReadinessChecker, ReadinessResponse
 
 
 class HealthResponse(BaseModel):
@@ -19,7 +22,8 @@ class CapabilitiesResponse(BaseModel):
     distributed_enabled: bool = False
 
 
-def create_app() -> FastAPI:
+def create_app(readiness: ReadinessChecker | None = None) -> FastAPI:
+    checker = readiness if readiness is not None else ReadinessChecker()
     app = FastAPI(
         title="RAG Platform API",
         version="0.1.0-dev",
@@ -31,6 +35,20 @@ def create_app() -> FastAPI:
         """Report process liveness, not dependency readiness or ingestion completeness."""
         return HealthResponse()
 
+    @app.get(
+        "/health/ready",
+        response_model=ReadinessResponse,
+        responses={503: {"model": ReadinessResponse}},
+        tags=["health"],
+    )
+    async def readiness_status() -> JSONResponse:
+        """Fail closed until every required runtime adapter is wired and responding."""
+        report = await checker.check()
+        return JSONResponse(
+            status_code=200 if report.status == "ready" else 503,
+            content=report.model_dump(mode="json"),
+        )
+
     @app.get("/api/v1/capabilities", response_model=CapabilitiesResponse, tags=["platform"])
     def capabilities() -> CapabilitiesResponse:
         return CapabilitiesResponse()
@@ -39,3 +57,14 @@ def create_app() -> FastAPI:
 
 
 app = create_app()
+
+
+def runtime_app() -> FastAPI:
+    """Explicit configured entry point: invalid configuration fails startup safely."""
+    import os
+
+    from rag_api.adapters import runtime_checker
+    from rag_api.runtime import RuntimeSettings
+
+    settings = RuntimeSettings.from_env(os.environ)
+    return create_app(runtime_checker(settings, os.environ.get("RAG_SEARCH_CA")))

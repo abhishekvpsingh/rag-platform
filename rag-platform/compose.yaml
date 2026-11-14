@@ -1,0 +1,114 @@
+name: rag-platform-dev
+x-runtime: &runtime
+  RAG_DATABASE_URL: postgresql://rag:${POSTGRES_PASSWORD:?Run scripts/init_runtime.py}@postgres:5432/rag
+  RAG_BROKER_URL: amqp://rag:${RABBITMQ_PASSWORD:?Run scripts/init_runtime.py}@rabbitmq:5672/rag
+  RAG_SEARCH_URL: https://opensearch:9200
+  RAG_SEARCH_USERNAME: admin
+  RAG_SEARCH_PASSWORD: ${OPENSEARCH_INITIAL_ADMIN_PASSWORD:?Run scripts/init_runtime.py}
+  RAG_SEARCH_CA: /local-tls/root-ca.pem
+  RAG_ARTIFACT_ROOT: /var/lib/rag/artifacts
+  RAG_PROBE_TIMEOUT_SECONDS: '5'
+  RAG_WORKER_CONCURRENCY: '1'
+services:
+  postgres:
+    image: postgres:17.6-bookworm
+    environment:
+      POSTGRES_USER: rag
+      POSTGRES_DB: rag
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Run scripts/init_runtime.py}
+    volumes: [postgres-data:/var/lib/postgresql/data]
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U rag -d rag']
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    mem_limit: 512m
+  rabbitmq:
+    image: rabbitmq:4.1.4-management
+    hostname: rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: rag
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:?Run scripts/init_runtime.py}
+      RABBITMQ_DEFAULT_VHOST: rag
+    volumes: [rabbitmq-data:/var/lib/rabbitmq]
+    healthcheck:
+      test: [CMD, rabbitmq-diagnostics, -q, ping]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+    mem_limit: 512m
+  opensearch:
+    image: opensearchproject/opensearch:3.9.0
+    environment:
+      discovery.type: single-node
+      OPENSEARCH_INITIAL_ADMIN_PASSWORD: ${OPENSEARCH_INITIAL_ADMIN_PASSWORD:?Run scripts/init_runtime.py}
+      OPENSEARCH_JAVA_OPTS: -Xms512m -Xmx512m
+    entrypoint: [bash, /start-search.sh]
+    volumes:
+      - search-data:/usr/share/opensearch/data
+      - ./.data/tls/root-ca.pem:/local-tls/root-ca.pem:ro
+      - ./.data/tls/esnode.pem:/local-tls/esnode.pem:ro
+      - ./.data/tls/esnode-key.pem:/local-tls/esnode-key.pem:ro
+      - ./.data/tls/kirk.pem:/local-tls/kirk.pem:ro
+      - ./.data/tls/kirk-key.pem:/local-tls/kirk-key.pem:ro
+      - ./infra/start-search.sh:/start-search.sh:ro
+    healthcheck:
+      test: [CMD-SHELL, 'curl --fail --silent --cacert config/root-ca.pem -u "admin:$$OPENSEARCH_INITIAL_ADMIN_PASSWORD" https://localhost:9200/_cluster/health >/dev/null']
+      interval: 10s
+      timeout: 5s
+      retries: 40
+      start_period: 30s
+    mem_limit: 2g
+  api:
+    build:
+      context: .
+      dockerfile: infra/Dockerfile.api
+    environment: *runtime
+    ports: ['127.0.0.1:${RAG_API_PORT:-8000}:8000']
+    volumes:
+      - artifacts:/var/lib/rag/artifacts
+      - ./.data/tls/root-ca.pem:/local-tls/root-ca.pem:ro
+    depends_on:
+      postgres: {condition: service_healthy}
+      rabbitmq: {condition: service_healthy}
+      opensearch: {condition: service_healthy}
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://localhost:8000/health/ready', timeout=8)"]
+      interval: 10s
+      timeout: 10s
+      retries: 12
+    mem_limit: 512m
+  worker:
+    build:
+      context: .
+      dockerfile: infra/Dockerfile.api
+    environment: *runtime
+    command: [celery, -A, rag_api.worker:app, worker, --loglevel=WARNING, --concurrency=1, --hostname=runtime@worker]
+    volumes:
+      - artifacts:/var/lib/rag/artifacts
+      - ./.data/tls/root-ca.pem:/local-tls/root-ca.pem:ro
+    depends_on:
+      rabbitmq: {condition: service_healthy}
+    healthcheck:
+      test: [CMD, python, -m, rag_api.worker_health]
+      interval: 15s
+      timeout: 8s
+      retries: 12
+    stop_grace_period: 30s
+    mem_limit: 512m
+  web:
+    build:
+      context: .
+      dockerfile: infra/Dockerfile.web
+    ports: ['127.0.0.1:${RAG_WEB_PORT:-3000}:3000']
+    healthcheck:
+      test: [CMD, node, -e, "fetch('http://localhost:3000').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    mem_limit: 512m
+volumes:
+  postgres-data:
+  rabbitmq-data:
+  search-data:
+  artifacts:

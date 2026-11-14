@@ -21,6 +21,10 @@ Error envelope: `code`, safe `message`, `request_id`, optional field errors and 
 | Recommendations | Evidence, dismiss/snooze, activation/migration preview |
 | Operations | Health, readiness, authorized metrics, backup/migration status |
 
+## Implemented process health
+
+`GET /health/live` reports process liveness. `GET /health/ready` returns 200 only when all five runtime dependency adapters (PostgreSQL, RabbitMQ, OpenSearch, artifacts, worker) are configured and pass bounded concurrent checks. Missing adapters return 503 with `not_configured`; failed or timed-out adapters return 503 with `unavailable`. Responses include dependency names/statuses and exclude connection URLs, credentials, and exception details. These public process endpoints do not establish tenant authorization or knowledge availability. The configured Compose entry point (`runtime_app --factory`) wires live adapters and fails startup on invalid settings. The lightweight `app` entry point remains explicitly unconfigured and returns `not_configured`. The worker probe performs a targeted broker round trip; TLS search validates its local CA and hostname.
+
 ## Long-running work
 
 Return 202 with job ID for asynchronous ingestion, reindexing, graph construction, and migration. Support idempotency keys for duplicate-sensitive commands. Persist state before publishing queue events. Cancellation is cooperative and cannot undo already committed side effects.

@@ -44,4 +44,8 @@ async def test_openapi_declares_public_endpoints() -> None:
         transport=httpx.ASGITransport(app=create_app()), base_url="http://test"
     ) as client:
         schema = (await client.get("/openapi.json")).json()
-    assert set(schema["paths"]) == {"/health/live", "/api/v1/capabilities"}
+    assert set(schema["paths"]) == {
+        "/health/live",
+        "/health/ready",
+        "/api/v1/capabilities",
+    }
