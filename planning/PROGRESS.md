@@ -2,7 +2,7 @@
 
 ## Current state
 
-T001 is complete and merged through [PR #2](https://github.com/abhishekvpsingh/rag-platform/pull/2). Mac local setup is verified. T002 is merged through PR #3 as c898645; the owner reports resolving the scanner issue manually. Post-merge CI is being verified. T003 is complete and merged through PR #4. T004 identity implementation is in progress. No storage connectors, ingestion, retrieval, or answers exist yet.
+T001 is complete and merged through [PR #2](https://github.com/abhishekvpsingh/rag-platform/pull/2). Mac local setup is verified. T002 is merged through PR #3 as c898645; the owner reports resolving the scanner issue manually. Post-merge CI is being verified. T003 is complete and merged through PR #4. T004 identity implementation and local acceptance are complete; PR #5 verification/merge is in progress. No storage connectors, ingestion, retrieval, or answers exist yet.
 
 ## Task status
 
@@ -11,23 +11,23 @@ T001 is complete and merged through [PR #2](https://github.com/abhishekvpsingh/r
 | T001 | Complete, merged | [Verification record](verification/T001.md), [PR #2](https://github.com/abhishekvpsingh/rag-platform/pull/2), merge `ada2f08` |
 | T002 | Complete, merged via PR #3 | [Verification evidence](verification/T002.md); merge c898645 |
 | T003 | Complete, merged via PR #4 | [Verification](verification/T003.md) |
-| T004 | Implementation and verification in progress | Identity services, migration and security tests; PR #5 remains draft |
+| T004 | Acceptance passed; merge verification | [Verification](verification/T004.md); PR #5 |
 | T005–T025 | Not started | Specifications only |
 
 ## Development checkpoint
 
-- Updated at: 2026-11-14T04:09:28.617905+00:00.
-- Session state: in-progress.
-- Active task: T004 identity/persistence/secrets; local acceptance passed; latest-head GitHub verification pending.
+- Updated at: 2026-11-14T04:28:51.538239+00:00.
+- Session state: ready-to-merge, subject to latest-head CI.
+- Active task: T004 identity/persistence/secrets; implementation and acceptance passed.
 - Feature branch: feature/T004-identity-foundation; base main c898645cd7d62e2c2a78c7165490dfb14a5c977a.
-- Last confirmed remote checkpoint: a115c05; [draft PR #5](https://github.com/abhishekvpsingh/rag-platform/pull/5). Current implementation not yet pushed.
-- Changed files: identity package, Alembic migration/config, main API, dependencies/lockfile, security tests and PostgreSQL recovery script, CI backend step, Compose/Dockerfile, runtime identity docs and ADR 0004.
-- Completed: singleton local bootstrap; Argon2 passwords; expiring/revocable hashed sessions; HTTPS cookie/Origin/CSRF routes; tenant-scoped connection operations and verified owner authorization; AES-GCM credential binding/rotation; bounded audit events.
-- Checks: Frozen uv sync, Ruff/format (38 files), mypy (27 sources), 63 pytest tests, 41-document validation and offline evaluation passed. PostgreSQL security suite (7 tests), migration rollback/reapply, schema drift and synthetic dump/restore all passed. Main c898645 all CI checks verified successful. An initial test URL replacement bug was corrected before the successful PostgreSQL runs. No existing application database used.
-- Running operations: none; disposable PostgreSQL test containers removed.
-- Next action: commit/push reviewed implementation and verify PR CI before merge.
-- Blockers: none; no external accounts needed.
-- Limits: HTTPS endpoint must be operator configured; login UI, connectors, shared source ACLs, multi-tenant selector, shared limiter and bulk key rotation remain future work. T004 not yet merge eligible.
+- Last verified implementation: 77bb4c7, pushed and confirmed on [PR #5](https://github.com/abhishekvpsingh/rag-platform/pull/5), ready for review.
+- Changed files: this checkpoint and T004 verification record only since tested implementation.
+- Completed: migrations; singleton local bootstrap; Argon2 passwords; hashed expiring/revocable sessions; HTTPS cookie/Origin/CSRF API; tenant-scoped connections and owner-only source authorization; AES-GCM credential binding/rotation; bounded audit events.
+- Checks: frozen sync, Ruff/format, mypy, 63 tests, docs and offline evaluation passed locally. Seven PostgreSQL security tests, migration rollback/reapply/drift and synthetic dump/restore passed. Both GitHub runs 43555383852 and 43555387014 passed all five checks at 77bb4c7; GitGuardian also passed. See [evidence](verification/T004.md).
+- Running operations: none at checkpoint; documentation commit will trigger fresh CI.
+- Next action: push this checkpoint, verify latest-head checks and merge PR #5 with expected SHA; then select T005 web shell from updated main.
+- Blockers: none. No external source accounts needed for T004.
+- Limits: operator-configured HTTPS; no login UI, connectors or shared ACL claims. Shared limiter, RLS, multi-tenant selection and bulk key rotation remain documented later work. No production recovery claim.
 
 ## Historical T002 integration checkpoint
 
