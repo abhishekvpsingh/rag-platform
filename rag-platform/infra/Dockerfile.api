@@ -4,6 +4,8 @@ WORKDIR /app
 COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --no-dev
 COPY services/api/src ./services/api/src
+COPY alembic.ini ./alembic.ini
+COPY migrations ./migrations
 COPY scripts/runtime_smoke.py ./scripts/runtime_smoke.py
 ENV PATH="/app/.venv/bin:$PATH" PYTHONPATH=/app/services/api/src PYTHONUNBUFFERED=1
 RUN useradd --uid 1000 --create-home rag && mkdir -p /var/lib/rag/artifacts && chown rag /var/lib/rag/artifacts

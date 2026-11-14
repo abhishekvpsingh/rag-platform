@@ -2,18 +2,34 @@
 
 ## Current state
 
-T001 is complete and merged through [PR #2](https://github.com/abhishekvpsingh/rag-platform/pull/2). Mac local setup is verified. T002 local and Linux runtime acceptance passes; merge is blocked on historical GitGuardian test-credential classification and integration-head CI. T003 is complete and merged through PR #4. No storage connectors, authentication, ingestion, retrieval, or answers exist yet.
+T001 is complete and merged through [PR #2](https://github.com/abhishekvpsingh/rag-platform/pull/2). Mac local setup is verified. T002 is merged through PR #3 as c898645; the owner reports resolving the scanner issue manually. Post-merge CI is being verified. T003 is complete and merged through PR #4. T004 identity implementation and local acceptance are complete; PR #5 verification/merge is in progress. No storage connectors, ingestion, retrieval, or answers exist yet.
 
 ## Task status
 
 | Task | Status | Evidence |
 |---|---|---|
 | T001 | Complete, merged | [Verification record](verification/T001.md), [PR #2](https://github.com/abhishekvpsingh/rag-platform/pull/2), merge `ada2f08` |
-| T002 | Runtime verified; merge blocked | [Verification evidence](verification/T002.md); GitGuardian classification pending |
+| T002 | Complete, merged via PR #3 | [Verification evidence](verification/T002.md); merge c898645 |
 | T003 | Complete, merged via PR #4 | [Verification](verification/T003.md) |
-| T004–T025 | Not started | Specifications only |
+| T004 | Acceptance passed; merge verification | [Verification](verification/T004.md); PR #5 |
+| T005–T025 | Not started | Specifications only |
 
 ## Development checkpoint
+
+- Updated at: 2026-11-14T04:28:51.538239+00:00.
+- Session state: ready-to-merge, subject to latest-head CI.
+- Active task: T004 identity/persistence/secrets; implementation and acceptance passed.
+- Feature branch: feature/T004-identity-foundation; base main c898645cd7d62e2c2a78c7165490dfb14a5c977a.
+- Last verified implementation: 77bb4c7, pushed and confirmed on [PR #5](https://github.com/abhishekvpsingh/rag-platform/pull/5), ready for review.
+- Changed files: this checkpoint and T004 verification record only since tested implementation.
+- Completed: migrations; singleton local bootstrap; Argon2 passwords; hashed expiring/revocable sessions; HTTPS cookie/Origin/CSRF API; tenant-scoped connections and owner-only source authorization; AES-GCM credential binding/rotation; bounded audit events.
+- Checks: frozen sync, Ruff/format, mypy, 63 tests, docs and offline evaluation passed locally. Seven PostgreSQL security tests, migration rollback/reapply/drift and synthetic dump/restore passed. Both GitHub runs 43555383852 and 43555387014 passed all five checks at 77bb4c7; GitGuardian also passed. See [evidence](verification/T004.md).
+- Running operations: none at checkpoint; documentation commit will trigger fresh CI.
+- Next action: push this checkpoint, verify latest-head checks and merge PR #5 with expected SHA; then select T005 web shell from updated main.
+- Blockers: none. No external source accounts needed for T004.
+- Limits: operator-configured HTTPS; no login UI, connectors or shared ACL claims. Shared limiter, RLS, multi-tenant selection and bulk key rotation remain documented later work. No production recovery claim.
+
+## Historical T002 integration checkpoint
 
 - Updated at: 2026-11-10T16:26:07Z.
 - Session state: in-progress; normal main integration locally verified; T002 merge remains externally blocked and the published integration head needs its own CI.

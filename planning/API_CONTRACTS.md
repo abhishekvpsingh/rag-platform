@@ -40,3 +40,12 @@ Settings use version/ETag preconditions. Define conflict errors and retry behavi
 ## Acceptance
 
 Contract tests cover errors, pagination, tenant isolation, idempotency, stale updates, streaming cancellation, and authorization on every resource including stored answers.
+
+## Identity foundation routes
+
+The explicitly enabled HTTPS identity API provides `POST /api/v1/auth/login`,
+`GET /api/v1/auth/me`, and `POST /api/v1/auth/logout`. Tenant context is resolved
+from persisted membership. Login returns a CSRF token; logout requires it in
+`X-CSRF-Token`. Cookie flags, request Origin policy, setup, limitations and
+operator commands are defined in [identity runtime setup](../rag-platform/infra/IDENTITY.md).
+Owner bootstrap is local-only and has no HTTP route.

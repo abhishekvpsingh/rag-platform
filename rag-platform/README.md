@@ -1,6 +1,6 @@
 # RAG Platform application
 
-The development foundation includes a runnable Next.js overview and FastAPI service, pinned dependency lockfiles, offline smoke tests, and CI. **Storage connectors, authentication, ingestion, retrieval, and answers are not implemented yet.** Do not connect private company data to this foundation or expose it publicly.
+The development foundation includes a runnable Next.js overview and FastAPI service, pinned dependency lockfiles, offline smoke tests, and CI. **Storage connectors, ingestion, retrieval, and answers are not implemented yet. Identity APIs and local owner setup are available with explicit HTTPS configuration.** Do not connect private company data to this foundation or expose it publicly.
 
 ## Prerequisites
 
@@ -46,7 +46,7 @@ pnpm dev
 
 Open `http://127.0.0.1:3000`. API docs are at `http://127.0.0.1:8000/docs`; liveness is `GET /health/live`; `GET /api/v1/capabilities` truthfully reports unavailable features. These are public, non-sensitive endpoints. Liveness does not imply dependency readiness. `GET /health/ready` returns **503 / not_configured** in this lightweight mode; the configured Compose runtime probes all dependencies. The overview does not call the API yet; no CORS exception is needed.
 
-Stop either process with Ctrl+C. These lightweight commands do not start stateful services. Use Compose below for the complete development runtime. Authorization and OAuth remain later tasks.
+Stop either process with Ctrl+C. These lightweight commands do not start stateful services. Use Compose below for the complete development runtime. See the [identity setup](infra/IDENTITY.md) for migrations, owner bootstrap and HTTPS sessions. OAuth remains later work.
 
 ## Compose runtime (T002)
 
@@ -65,6 +65,7 @@ uv run --frozen ruff check .
 uv run --frozen ruff format --check .
 uv run --frozen mypy
 uv run --frozen pytest
+PYTHONPATH=services/api/src uv run --frozen python scripts/verify_identity.py
 python scripts/check_docs.py
 pnpm format:check
 pnpm lint
