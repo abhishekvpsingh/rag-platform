@@ -55,14 +55,33 @@ def main() -> None:
         else:
             raise RuntimeError("Disposable PostgreSQL did not become ready")
         with psycopg.connect(url, autocommit=True) as db:
-            for database in ("identity_tests", "identity_source", "identity_restored"):
+            for database in (
+                "identity_tests",
+                "identity_source",
+                "identity_restored",
+                "identity_jobs",
+            ):
                 db.execute(
                     psycopg.sql.SQL("CREATE DATABASE {}").format(psycopg.sql.Identifier(database))
                 )
         subprocess.run(
-            [sys.executable, "-m", "pytest", "tests/test_identity.py", "-q", "--tb=short"],
+            [
+                sys.executable,
+                "-m",
+                "pytest",
+                "tests/test_identity.py",
+                "tests/test_jobs.py",
+                "-q",
+                "--tb=short",
+            ],
             cwd=ROOT,
             env={**env, "RAG_TEST_DATABASE_URL": url.rsplit("/", 1)[0] + "/identity_tests"},
+            check=True,
+        )
+        subprocess.run(
+            [sys.executable, "scripts/verify_jobs.py"],
+            cwd=ROOT,
+            env={**env, "RAG_DATABASE_URL": url.rsplit("/", 1)[0] + "/identity_jobs"},
             check=True,
         )
         source_url = url.rsplit("/", 1)[0] + "/identity_source"

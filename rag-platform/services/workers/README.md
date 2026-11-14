@@ -6,6 +6,8 @@ acknowledgment, and prefetch one. A targeted control ping checks the actual work
 through RabbitMQ; a stopped or unreachable worker makes API readiness fail.
 Probe subprocesses are killed and reaped on timeout/cancellation.
 
-No ingestion tasks, database job state, outbox, or application retry/idempotency
-implementation exists yet. Those belong to T006. The runtime control ping and
-synthetic persistence exercise do not establish durable application processing.
+The durable job engine now provides database job/attempt state, transactional
+outbox dispatch, leases, bounded retries, idempotent completion and generation
+fencing. The maintenance queue runs a bounded diagnostic worker check. Document
+ingestion arrives in T007. See the [job runbook](../../infra/JOBS.md) for migration,
+dispatcher activation, authenticated APIs and recovery verification.

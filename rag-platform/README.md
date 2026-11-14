@@ -2,6 +2,9 @@
 
 The development foundation includes a responsive Next.js workspace shell and FastAPI service, pinned dependency lockfiles, offline smoke tests, and CI. **Storage connectors, ingestion, retrieval, and answers are not implemented yet. Identity APIs and local owner setup are available with explicit HTTPS configuration.** Do not connect private company data to this foundation or expose it publicly.
 
+See the [architecture diagram and component guide](infra/ARCHITECTURE.md) and
+[durable job runbook](infra/JOBS.md).
+
 ## Prerequisites
 
 - Python **3.12.14** and uv **0.13.5**.
@@ -44,7 +47,7 @@ Start the web application in another terminal from the same directory:
 pnpm dev
 ```
 
-Open `http://127.0.0.1:3000`. API docs are at `http://127.0.0.1:8000/docs`; liveness is `GET /health/live`; `GET /api/v1/capabilities` truthfully reports unavailable features. These are public, non-sensitive endpoints. Liveness does not imply dependency readiness. `GET /health/ready` returns **503 / not_configured** in this lightweight mode; the configured Compose runtime probes all dependencies. The web shell includes Overview, Ask, Sources, Knowledge, Quality, Operations and Settings. Navigation works on desktop and mobile. These availability screens do not call the API or display tenant data yet; no CORS exception is needed.
+Open `http://127.0.0.1:3000`. API docs are at `http://127.0.0.1:8000/docs`; liveness is `GET /health/live`; `GET /api/v1/capabilities` truthfully reports unavailable features. These are public, non-sensitive endpoints. Liveness does not imply dependency readiness. `GET /health/ready` returns **503 / not_configured** in this lightweight mode; the configured Compose runtime probes all dependencies. The web shell includes Overview, Ask, Sources, Knowledge, Quality, Operations and Settings. Navigation works on desktop and mobile. Operations displays authenticated background-job status through a same-origin server proxy; other product screens remain availability views. See the [job runtime](infra/JOBS.md) for HTTPS/session configuration.
 
 Stop either process with Ctrl+C. These lightweight commands do not start stateful services. Use Compose below for the complete development runtime. See the [identity setup](infra/IDENTITY.md) for migrations, owner bootstrap and HTTPS sessions. OAuth remains later work.
 
@@ -76,7 +79,7 @@ PLAYWRIGHT_SKIP_BROWSER_GC=1 pnpm --filter @rag-platform/web exec playwright ins
 pnpm test:e2e
 ```
 
-On a fresh Linux machine, browser system libraries may require `playwright install --with-deps chromium`; macOS uses the command above. `PLAYWRIGHT_SKIP_BROWSER_GC=1` preserves browser caches used by other local projects. End-to-end tests start the production build on loopback port 3100; run `pnpm build` first and keep that port free. Do not reuse unrelated local servers. Browser tests cover desktop/mobile layout, status disclosure, keyboard navigation, and local links.
+On a fresh Linux machine, browser system libraries may require `playwright install --with-deps chromium`; macOS uses the command above. `PLAYWRIGHT_SKIP_BROWSER_GC=1` preserves browser caches used by other local projects. End-to-end tests start the production build on loopback port 3100; run `pnpm build` first and keep that port free. Do not reuse unrelated local servers. Browser tests cover desktop/mobile layout, status disclosure, keyboard navigation, local links, job polling, failure recovery and clearing job details after session revocation. Job browser fixtures are synthetic; the separate PostgreSQL/RabbitMQ verifier exercises real execution and recovery.
 
 For manual production-build smoke testing:
 
@@ -107,8 +110,8 @@ See [workload and targets](tests/fixtures/evaluation/README.md).
 | Directory | Responsibility |
 |---|---|
 | `apps/web/` | Responsive workspace shell, availability screens and browser tests |
-| `services/api/` | FastAPI process metadata and capabilities |
-| `services/workers/` | Worker runtime documentation; application jobs arrive in T006 |
+| `services/api/` | FastAPI, identity, durable jobs and runtime adapters |
+| `services/workers/` | Worker runtime documentation; durable jobs are implemented in services/api/src/rag_api/jobs |
 | `packages/connectors/` | Reserved for connector contracts/adapters |
 | `infra/` | Development Dockerfiles and runtime instructions |
 | `tests/` | API tests and future synthetic integration fixtures |

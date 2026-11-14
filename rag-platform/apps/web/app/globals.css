@@ -631,3 +631,26 @@ button.primary-link {
     --motion: 0ms;
   }
 }
+
+.job-list {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: var(--space-4);
+}
+.job-list li {
+  border-top: 1px solid var(--line);
+  padding-top: var(--space-4);
+}
+.job-list .state-label {
+  margin-left: var(--space-4);
+}
+.job-list small {
+  display: block;
+  overflow-wrap: anywhere;
+  color: var(--muted);
+}
+.job-list progress {
+  width: min(100%, 360px);
+  accent-color: var(--teal);
+}

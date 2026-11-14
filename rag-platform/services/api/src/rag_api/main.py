@@ -77,8 +77,10 @@ def runtime_app() -> FastAPI:
     if os.environ.get("RAG_AUTH_ENABLED") == "true":
         from rag_api.identity.cli import configured_origin, configured_service
         from rag_api.identity.http import auth_router
+        from rag_api.jobs.http import jobs_router
 
-        app.include_router(
-            auth_router(configured_service(os.environ), configured_origin(os.environ))
-        )
+        identity = configured_service(os.environ)
+        origin = configured_origin(os.environ)
+        app.include_router(auth_router(identity, origin))
+        app.include_router(jobs_router(identity, origin))
     return app

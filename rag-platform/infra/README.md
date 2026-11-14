@@ -28,8 +28,8 @@ RAG_WEB_PORT=13000` (on one line). No database, AMQP, search, or management port
 is published. Container network listeners are separate from host publication.
 Named volumes preserve database, broker messages, search data, and artifacts
 across restart and `down`/`up`. Do not use `down -v` unless deliberately destroying
-this development data. No real source data belongs in this unauthenticated
-application foundation.
+this development data. Identity requires explicit HTTPS setup; ingestion is not yet available.
+See [identity](IDENTITY.md) and [durable jobs](JOBS.md) for activation.
 
 OpenSearch security remains enabled. Startup replaces demo certificates with
 locally generated certificates, verifies hostname/CA trust, rejects unsafe demo

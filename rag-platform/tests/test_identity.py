@@ -1,11 +1,8 @@
 """Security suite also run against disposable PostgreSQL in CI."""
 
-import os
 import secrets
-from collections.abc import Iterator
 from concurrent.futures import ThreadPoolExecutor
 from datetime import timedelta
-from pathlib import Path
 from uuid import uuid4
 
 import pytest
@@ -14,7 +11,6 @@ from rag_api.identity.crypto import CredentialCipher
 from rag_api.identity.http import COOKIE, auth_router
 from rag_api.identity.models import (
     AuditEvent,
-    Base,
     Bootstrap,
     Connection,
     Membership,
@@ -23,27 +19,11 @@ from rag_api.identity.models import (
     Tenant,
     User,
 )
-from rag_api.identity.service import AccessDenied, IdentityService, database_engine, digest, now
+from rag_api.identity.service import AccessDenied, IdentityService, digest, now
 from rag_api.main import create_app
-from sqlalchemy import event, func, select
+from sqlalchemy import func, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
-
-
-@pytest.fixture
-def service(tmp_path: Path) -> Iterator[IdentityService]:
-    url = os.environ.get("RAG_TEST_DATABASE_URL", f"sqlite:///{tmp_path / 'identity.db'}")
-    engine = database_engine(url)
-    if engine.dialect.name == "sqlite":
-
-        @event.listens_for(engine, "connect")
-        def foreign_keys(connection: object, record: object) -> None:
-            connection.execute("PRAGMA foreign_keys=ON")  # type: ignore[attr-defined]
-
-    Base.metadata.create_all(engine)
-    yield IdentityService(engine, CredentialCipher({"test": secrets.token_bytes(32)}, "test"))
-    Base.metadata.drop_all(engine)
-    engine.dispose()
 
 
 def owner(service: IdentityService) -> str:

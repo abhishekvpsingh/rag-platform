@@ -20,9 +20,15 @@ test("workspace navigation and honest availability", async ({
     await expect(
       navigation.getByRole("link", { name, exact: true }),
     ).toHaveAttribute("aria-current", "page");
-    await expect(
-      page.getByText("Not available yet", { exact: true }),
-    ).toBeVisible();
+    if (path === "/operations") {
+      await expect(
+        page.getByRole("heading", { name: "Sign in to view your jobs" }),
+      ).toBeVisible();
+    } else {
+      await expect(
+        page.getByText("Not available yet", { exact: true }),
+      ).toBeVisible();
+    }
     await expect(page.getByRole("textbox")).toHaveCount(0);
     await expect(page.getByRole("button")).toHaveCount(0);
     expect(

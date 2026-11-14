@@ -49,3 +49,13 @@ from persisted membership. Login returns a CSRF token; logout requires it in
 `X-CSRF-Token`. Cookie flags, request Origin policy, setup, limitations and
 operator commands are defined in [identity runtime setup](../rag-platform/infra/IDENTITY.md).
 Owner bootstrap is local-only and has no HTTP route.
+
+## Durable job routes
+
+T006 provides authenticated latest-50 owner-only listing at GET /api/v1/jobs,
+POST /api/v1/jobs/checks with an idempotency key, and POST cancellation/replay
+routes. Mutations require Origin and CSRF validation. The initial handler is a
+real bounded worker diagnostic; ingestion is not available. The Operations view
+polls through a no-cache, field-filtering server proxy. Exact inputs, limits and
+status behavior are in the [job runbook](../rag-platform/infra/JOBS.md); executable
+schemas live in jobs/http.py.
