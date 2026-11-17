@@ -92,7 +92,7 @@ export function JobsPanel() {
         <ul className="job-list">
           {view.jobs.map((job) => (
             <li key={job.id}>
-              <strong>Worker check</strong>
+              <strong>{job.kind === "ingest" ? "Document ingestion" : "Worker check"}</strong>
               <span className="state-label">{job.state}</span>
               <p>
                 Attempt {job.attempts} · {job.progress}% complete

@@ -63,7 +63,7 @@ export async function GET(request: NextRequest) {
       if (
         typeof data.id !== "string" ||
         data.id.length > 36 ||
-        data.kind !== "worker_check" ||
+        !["worker_check", "ingest"].includes(String(data.kind)) ||
         typeof data.state !== "string" ||
         !states.includes(data.state) ||
         typeof data.progress !== "number" ||

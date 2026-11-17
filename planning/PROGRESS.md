@@ -14,23 +14,25 @@ T001 is complete and merged through [PR #2](https://github.com/abhishekvpsingh/r
 | T004 | Complete, merged | [Verification](verification/T004.md); PR #5, daaa925 |
 | T005 | Complete, merged | [Verification](verification/T005.md); PR #6, 10641ce |
 | T006 | Complete, merged as f50152d | [Verification](verification/T006.md), [PR #7](https://github.com/abhishekvpsingh/rag-platform/pull/7) |
-| T007–T025 | Not started | Specifications only |
+| T007 | In progress | Parser/indexing implementation |
+| T008–T025 | Not started | Specifications only |
 
 ## Development checkpoint
 
-- Updated at: 2026-11-14T21:38:32.304181+00:00.
-- Session state: completed.
-- Active task: T006 complete; next ready task is T007 parser/indexing pipeline.
-- Feature branch: feature/T006-durable-work; implementation base main 10641cea7b290c7f537cd2b830e55716081b8931.
-- Last verified implementation: f2eacf8c56c5db9717f7739206010580921da9bf; [PR #7](https://github.com/abhishekvpsingh/rag-platform/pull/7) merged as f50152da02e6f7810501b6474a63a571cac18454. origin/main fetched and merge verified.
-- Changed files: implementation merged. This completion checkpoint is a documentation-only follow-up on the original task branch; carry it into the next task branch rather than reopening the merged implementation.
-- Completed: database jobs/attempts/outbox, bounded publisher/execution retries, leases, cancellation, stale generation/tombstone rejection, owner-only APIs, Operations status, migration and runtime/architecture guides.
-- Checks: Ruff/mypy passed; 73 backend tests plus 18 real PostgreSQL identity/job tests; 7 frontend tests; 10 browser checks; lint/typecheck/build/format/docs passed. Real broker outage replay, duplicate delivery, worker kill, invalidation/cancellation, migration drift/round-trip and identity restore passed. See [T006 evidence](verification/T006.md).
-- Remote evidence: exact-head runs 43643339875 and 43643345272 passed Documentation, Backend, Frontend, Runtime Integration and CI Gate; GitGuardian passed. Expected-head squash merge succeeded.
-- Running operations: post-merge main CI may still be running; not yet verified. No local test process remains running.
-- Next action: start T007 from origin/main after preserving this checkpoint; read ingestion, data model, models/configuration and security specifications, then implement the bounded parser/indexing task.
-- Blockers: none for synthetic T007 development; later live connector/model validation requires supported accounts.
-- Limits: diagnostic execution is not ingestion. Browser job scenarios use synthetic HTTP fixtures; real worker-kill testing uses solo mode. No production/cluster validation.
+- Updated at: 2026-11-17T04:21:21.679442+00:00.
+- Session state: in-progress.
+- Active task: T007 parser/indexing pipeline, parser/artifact/embedding/revision/index modules implemented; integration verification underway.
+- Branch: feature/T007-parser-indexing; base main f50152da02e6f7810501b6474a63a571cac18454.
+- Last checkpoint: 261c4d8 carries T006 completion record. T006 post-merge CI confirmed successful.
+- Changes: new ingestion modules, PDF/safe XML dependencies and lock, libseccomp runtime dependency. Existing next-env.d.ts development-path modification is preserved and excluded.
+- Design: Linux parser child uses CPU/memory/output/time limits and a default-deny syscall allowlist after imports. Native non-Linux parsing fails closed; macOS uses Compose Linux containers. Failed native macOS sandbox experiment was removed, not bypassed.
+- Checks: dependency resolution passed. 12 native fixture tests passed (Linux sandbox skipped on Mac); all 13 tests including all seven isolated formats and denied socket/file/fork operations passed in disposable Linux Docker. Mypy passed before latest handler changes. T007 not complete.
+- Running operations: none; next real OpenSearch/migration checks pending.
+- Blockers: none for synthetic development.
+- Next action: implement revision/index publication and durable handler; run parser sandbox/format/security tests and real OpenSearch integration.
+- Remaining acceptance: locators, unsafe/oversized inputs, unchanged-content reuse, provider recovery, generation activation, all CI.
+- Remote: T007 not pushed yet; no PR. T006 remains merged via PR #7.
+- Limits: no live source or external model calls authorized/configured; fixture embeddings must remain labeled.
 
 ## Historical T002 integration checkpoint
 

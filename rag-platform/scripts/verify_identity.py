@@ -71,6 +71,7 @@ def main() -> None:
                 "pytest",
                 "tests/test_identity.py",
                 "tests/test_jobs.py",
+                "tests/test_ingestion.py",
                 "-q",
                 "--tb=short",
             ],

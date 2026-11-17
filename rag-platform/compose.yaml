@@ -88,7 +88,7 @@ services:
       context: .
       dockerfile: infra/Dockerfile.api
     environment: *runtime
-    command: [celery, -A, rag_api.worker:app, worker, --loglevel=WARNING, --concurrency=1, --hostname=runtime@worker, "--queues=runtime,maintenance"]
+    command: [celery, -A, rag_api.worker:app, worker, --loglevel=WARNING, --concurrency=1, --hostname=runtime@worker, "--queues=runtime,maintenance,ingestion"]
     volumes:
       - artifacts:/var/lib/rag/artifacts
       - ./.data/tls/root-ca.pem:/local-tls/root-ca.pem:ro
