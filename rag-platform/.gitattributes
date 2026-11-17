@@ -1,0 +1,4 @@
+# Binary document fixtures retain format-required bytes and cross-reference padding.
+*.pdf binary
+*.docx binary
+*.xlsx binary
