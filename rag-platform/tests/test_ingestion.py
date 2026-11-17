@@ -318,3 +318,49 @@ def test_provider_retry_and_owner_isolation(service: IdentityService, tmp_path: 
     with Session(service.engine) as db:
         complete = db.get(Job, (job.tenant_id, job.id))
         assert complete and complete.state == "succeeded" and complete.attempts == 2
+
+
+def test_concurrent_revocation_prevents_publication(
+    service: IdentityService, tmp_path: Path
+) -> None:
+    from concurrent.futures import ThreadPoolExecutor
+    from threading import Event
+
+    from rag_api.identity.models import SourceIdentity
+
+    if service.engine.dialect.name != "postgresql":
+        pytest.skip("Concurrent revocation locks are verified on PostgreSQL")
+    token = owner(service)
+    connection = service.add_connection(token, "google_drive", "fixture")
+    service.verify_source_identity(token, connection, "subject", now() + timedelta(hours=1))
+    ingestion = IngestionService(service, LocalArtifacts(tmp_path))
+    model = FixtureEmbeddings()
+    job = ingestion.submit(token, connection, "file", "v1", "txt", b"private", model.config)
+    lease = ingestion.jobs.claim(job.tenant_id, job.id)
+    assert lease
+    reached = Event()
+    client = httpx.Client(
+        base_url="https://search.example",
+        transport=httpx.MockTransport(lambda _: httpx.Response(200, json={"errors": False})),
+    )
+
+    def execute() -> None:
+        reached.set()
+        run_pipeline(
+            service.engine, lease, ingestion.artifacts, model, OpenSearchIndex(client), parse
+        )
+
+    with ThreadPoolExecutor(max_workers=1) as pool:
+        with Session(service.engine) as db, db.begin():
+            source = db.get(SourceIdentity, (job.tenant_id, connection, job.owner_id))
+            assert source
+            source.verified_until = now() - timedelta(seconds=1)
+            db.flush()  # Hold the revocation row lock while publication starts.
+            future = pool.submit(execute)
+            assert reached.wait(5)
+        future.result(timeout=10)
+    with Session(service.engine) as db:
+        target = db.get(WorkTarget, (job.tenant_id, job.target_id))
+        assert target and target.active_generation is None
+        completed = db.get(Job, (job.tenant_id, job.id))
+        assert completed and completed.state == "failed"

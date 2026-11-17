@@ -9,7 +9,7 @@ from sqlalchemy import Engine, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from rag_api.identity.models import Connection, SourceIdentity
+from rag_api.identity.models import Connection, Membership, SourceIdentity, User
 from rag_api.identity.service import AccessDenied, IdentityService, utc
 from rag_api.ingestion.artifacts import LocalArtifacts
 from rag_api.ingestion.chunking import CHUNKER_VERSION, chunks
@@ -225,9 +225,38 @@ def authorized(db: Session, jobs: JobService, lease: Lease) -> tuple[Job, Revisi
         .where(Connection.tenant_id == lease.tenant_id, Connection.id == document.connection_id)
         .with_for_update()
     )
-    source = db.get(SourceIdentity, (lease.tenant_id, document.connection_id, job.owner_id))
+    # Lock authorization rows through activation, serializing concurrent revocation.
+    source = db.scalar(
+        select(SourceIdentity)
+        .where(
+            SourceIdentity.tenant_id == lease.tenant_id,
+            SourceIdentity.connection_id == document.connection_id,
+            SourceIdentity.user_id == job.owner_id,
+        )
+        .with_for_update()
+        .execution_options(populate_existing=True)
+    )
+    membership = db.scalar(
+        select(Membership)
+        .where(
+            Membership.tenant_id == lease.tenant_id,
+            Membership.user_id == job.owner_id,
+        )
+        .with_for_update()
+        .execution_options(populate_existing=True)
+    )
+    user = db.scalar(
+        select(User)
+        .where(User.id == job.owner_id)
+        .with_for_update()
+        .execution_options(populate_existing=True)
+    )
     if (
-        not connection
+        not membership
+        or not membership.active
+        or not user
+        or not user.active
+        or not connection
         or not connection.active
         or connection.owner_id != job.owner_id
         or not source
