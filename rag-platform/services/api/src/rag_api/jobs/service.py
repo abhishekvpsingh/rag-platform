@@ -309,7 +309,7 @@ class JobService:
             job.lease_until = self.clock() + timedelta(seconds=self.lease_seconds)
             return True
 
-    def complete(self, lease: Lease) -> bool:
+    def complete(self, lease: Lease, publish: Callable[[Session, Job], str] | None = None) -> bool:
         with Session(self.engine) as db, db.begin():
             job = self.live_lease(db, lease)
             if job is None or self.invalidate_if_needed(db, job):
@@ -322,7 +322,7 @@ class JobService:
                     target_id=job.target_id,
                     generation=job.generation,
                     job_id=job.id,
-                    output_ref="worker-check:ok",
+                    output_ref=publish(db, job) if publish else "worker-check:ok",
                 )
             )
             target.active_generation = job.generation

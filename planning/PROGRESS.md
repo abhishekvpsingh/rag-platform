@@ -2,7 +2,7 @@
 
 ## Current state
 
-T001 is complete and merged through [PR #2](https://github.com/abhishekvpsingh/rag-platform/pull/2). Mac local setup is verified. T002 is merged through PR #3 as c898645; the owner reports resolving the scanner issue manually. Post-merge CI passed. T003 is complete and merged through PR #4. T004 is complete and merged via PR #5 as daaa925. T005 is complete and merged via PR #6 as 10641ce. T006 durable work engine is in progress. No storage connectors, ingestion, retrieval, or answers exist yet.
+T001 is complete and merged through [PR #2](https://github.com/abhishekvpsingh/rag-platform/pull/2). Mac local setup is verified. T002 is merged through PR #3 as c898645; the owner reports resolving the scanner issue manually. Post-merge CI passed. T003 is complete and merged through PR #4. T004 is complete and merged via PR #5 as daaa925. T005 is complete and merged via PR #6 as 10641ce. T006 durable work engine is complete and merged via PR #7 as f50152d. No storage connectors, ingestion, retrieval, or answers exist yet.
 
 ## Task status
 
@@ -13,23 +13,25 @@ T001 is complete and merged through [PR #2](https://github.com/abhishekvpsingh/r
 | T003 | Complete, merged via PR #4 | [Verification](verification/T003.md) |
 | T004 | Complete, merged | [Verification](verification/T004.md); PR #5, daaa925 |
 | T005 | Complete, merged | [Verification](verification/T005.md); PR #6, 10641ce |
-| T006 | Implemented; CI pending | [Verification](verification/T006.md), [PR #7](https://github.com/abhishekvpsingh/rag-platform/pull/7) |
-| T007–T025 | Not started | Specifications only |
+| T006 | Complete, merged as f50152d | [Verification](verification/T006.md), [PR #7](https://github.com/abhishekvpsingh/rag-platform/pull/7) |
+| T007 | In progress | Parser/indexing implementation |
+| T008–T025 | Not started | Specifications only |
 
 ## Development checkpoint
 
-- Updated at: 2026-11-14T21:32:13.723073+00:00.
+- Updated at: 2026-11-17T04:30:27.277882+00:00.
 - Session state: in-progress.
-- Active task: T006 durable work engine; implementation and local acceptance complete; remote CI pending.
-- Feature branch: feature/T006-durable-work; base main 10641cea7b290c7f537cd2b830e55716081b8931.
-- Last verified implementation: T006 1683956ee28c6a302b41725a5edbce306538d998, confirmed pushed to origin/feature/T006-durable-work; [PR #7](https://github.com/abhishekvpsingh/rag-platform/pull/7). T005 post-merge CI passed.
-- Changed files: job schema/service/dispatcher/handler/API, migration 0002, Operations status/proxy, tests, Compose jobs profile, ADR 0005, architecture guide and runtime documentation. All changes are task-owned.
-- Design: PostgreSQL owns jobs/attempts and transactional outbox; opaque queue IDs; leases and generation/tombstone checks gate publication. Diagnostic execution precedes real ingestion.
-- Checks: Ruff and mypy passed; full backend 73 passed/1 SQLite concurrency skip; real PostgreSQL suite 18 passed. Web lint/typecheck/build and 7 unit tests passed; 10 desktop/mobile browser checks passed. Real RabbitMQ outage replay, duplicate delivery, worker kill, deletion/cancellation and migration/restore passed in the earlier run; final run with both additional PostgreSQL failure/revocation tests passed. See [T006 evidence](verification/T006.md).
-- Running operations: local checks completed; GitHub runs 43643271453 and 43643301566 started for 1683956. GitGuardian passed. This checkpoint commit requires its own exact-head CI.
-- Next action: inspect PR #7 checks on the latest head; fix failures if any, then expected-head squash merge only after all checks pass. Next development task is T007.
-- Blockers: none; no external source/model account required.
-- Limits: real diagnostic task is not ingestion. Browser status scenarios use synthetic HTTP fixtures. Worker-kill acceptance uses a real solo worker; Compose uses prefork. No production/cluster validation.
+- Active task: T007 implementation complete; final real-runtime and CI verification pending.
+- Branch: feature/T007-parser-indexing; base main f50152da02e6f7810501b6474a63a571cac18454.
+- Last saved implementation: 736a06b pushed; draft [PR #8](https://github.com/abhishekvpsingh/rag-platform/pull/8). Additional tests, schema provenance, runbook and real OpenSearch verification are being committed.
+- Changes: isolated parsers, artifact/revision storage, embedding adapter, model-specific OpenSearch staging, generation publication, durable worker integration, operator CLI, migration 0003, test fixtures/CI/runbooks. Existing next-env.d.ts dev-path edit was preserved initially; Next build regenerated its normal tracked contents.
+- Checks: full native 89 passed/2 platform skips; expanded ingestion 16 passed/1 Linux skip; initial Linux sandbox suite 13 passed; PostgreSQL suite 34 passed/1 Linux skip; RabbitMQ worker recovery, migration round trip/drift and identity restore passed. Seven synthetic formats indexed in real OpenSearch. Ruff/mypy, frontend lint/typecheck/build and 7 tests passed. See [T007 evidence](verification/T007.md).
+- Running operations: final Docker/OpenSearch schema and all 10 browser checks passed; final remote CI pending. First checkpoint CI failed only formatting; corrected locally, final head needs its own CI.
+- Design: default-deny Linux parser; Mac uses containers. Source-version observations preserve changed ETags without repeated embedding. External provider configuration is explicit; fixtures remain non-semantic.
+- Next action: confirm final tests, push complete implementation, review PR #8 and require all exact-head checks before merge.
+- Blockers: none for synthetic pipeline acceptance; live source/model validation remains later.
+- Limits: no product retrieval, source OAuth, OCR, formula evaluation or analytical aggregation; inactive index entries are not authorized evidence.
+- Merge restriction: draft must not merge until final exact-head CI/security gates pass.
 
 ## Historical T002 integration checkpoint
 

@@ -1,0 +1,1 @@
+"""Versioned, bounded document ingestion."""

@@ -9,6 +9,13 @@ x-runtime: &runtime
   RAG_ARTIFACT_ROOT: /var/lib/rag/artifacts
   RAG_PROBE_TIMEOUT_SECONDS: '5'
   RAG_WORKER_CONCURRENCY: '1'
+  RAG_EMBEDDING_MODE: ${RAG_EMBEDDING_MODE:-}
+  RAG_EMBEDDING_MODEL: ${RAG_EMBEDDING_MODEL:-}
+  RAG_EMBEDDING_REVISION: ${RAG_EMBEDDING_REVISION:-}
+  RAG_EMBEDDING_DIMENSIONS: ${RAG_EMBEDDING_DIMENSIONS:-}
+  RAG_EMBEDDING_ENDPOINT: ${RAG_EMBEDDING_ENDPOINT:-}
+  RAG_EMBEDDING_ALLOWED_ORIGINS: ${RAG_EMBEDDING_ALLOWED_ORIGINS:-}
+  RAG_EMBEDDING_KEY: ${RAG_EMBEDDING_KEY:-}
 services:
   postgres:
     image: postgres:17.6-bookworm
@@ -88,7 +95,7 @@ services:
       context: .
       dockerfile: infra/Dockerfile.api
     environment: *runtime
-    command: [celery, -A, rag_api.worker:app, worker, --loglevel=WARNING, --concurrency=1, --hostname=runtime@worker, "--queues=runtime,maintenance"]
+    command: [celery, -A, rag_api.worker:app, worker, --loglevel=WARNING, --concurrency=1, --hostname=runtime@worker, "--queues=runtime,maintenance,ingestion"]
     volumes:
       - artifacts:/var/lib/rag/artifacts
       - ./.data/tls/root-ca.pem:/local-tls/root-ca.pem:ro

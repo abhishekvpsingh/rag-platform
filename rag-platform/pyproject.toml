@@ -9,9 +9,11 @@ dependencies = [
     "argon2-cffi>=25,<26",
     "celery>=5.5,<6",
     "cryptography>=46,<48",
+    "defusedxml>=0.7,<1",
     "fastapi>=0.121,<1",
     "httpx>=0.28,<1",
     "psycopg[binary]>=3.2,<4",
+    "pypdf>=6,<7",
     "sqlalchemy>=2.0,<2.1",
     "uvicorn>=0.38,<1",
 ]

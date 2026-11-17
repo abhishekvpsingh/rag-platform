@@ -1,7 +1,7 @@
 # Architecture overview
 
-The application foundation and diagnostic job engine are implemented. Document
-ingestion, model calls and question answering below are planned next stages.
+The application foundation and diagnostic job engine are implemented. The parser/indexing pipeline is implemented for authorized revisions. Live source
+connectors and question answering remain planned.
 
 ```mermaid
 flowchart TD
@@ -13,9 +13,9 @@ flowchart TD
   MQ --> Worker[Celery workers]
   Worker --> PG
   Worker --> Artifacts[(Persistent artifact volume)]
-  Worker -. planned indexing .-> Search[(OpenSearch)]
+  Worker -. indexing .-> Search[(OpenSearch)]
   Source[Drive / OneDrive: future connectors] -. downloads .-> Worker
-  Worker -. planned embeddings .-> Models[Model providers]
+  Worker -. configured embeddings .-> Models[Model providers]
   API -. planned retrieval .-> Search
   API -. planned answers .-> Models
 ```
@@ -29,7 +29,7 @@ flowchart TD
 | RabbitMQ | Transport persistent work messages. It holds delivery instructions, not the authoritative job history. |
 | Celery workers | Separate background processes. They claim a database lease, execute an installed task, heartbeat and commit completion. |
 | Outbox dispatcher | Sends committed jobs to RabbitMQ with confirms, retries failed publication and recovers expired work. |
-| OpenSearch | Search engine for keyword and vector retrieval. Its future document index is a derived view, rebuildable from authoritative records/artifacts. The service is running; product indexing/retrieval is not yet implemented. |
+| OpenSearch | Search engine for keyword and vector retrieval. Its future document index is a derived view, rebuildable from authoritative records/artifacts. The ingestion writer is implemented; product retrieval is not yet implemented. |
 | Persistent artifacts | Files retained on a named volume: future downloaded originals and extracted processing outputs. Unlike temporary container files, the volume survives container recreation. |
 | Docker Compose | Runs the local services and persistent volumes together. |
 | Model provider adapters | Planned interfaces for embeddings and answer generation; no model credentials are needed for current diagnostics. |

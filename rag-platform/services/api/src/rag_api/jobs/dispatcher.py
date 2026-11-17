@@ -40,10 +40,17 @@ def main() -> None:
     signal.signal(signal.SIGINT, lambda *_: stopped.set())
 
     def publish(tenant_id: str, job_id: str) -> None:
+        from sqlalchemy.orm import Session
+
+        from rag_api.jobs.models import Job
+
+        with Session(engine) as db:
+            job = db.get(Job, (tenant_id, job_id))
+            queue = "ingestion" if job and job.kind == "ingest" else "maintenance"
         app.send_task(
             "rag.jobs.execute",
             args=[tenant_id, job_id],
-            queue="maintenance",
+            queue=queue,
             task_id=job_id,
             retry=False,
             delivery_mode=2,

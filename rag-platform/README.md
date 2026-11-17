@@ -1,9 +1,9 @@
 # RAG Platform application
 
-The development foundation includes a responsive Next.js workspace shell and FastAPI service, pinned dependency lockfiles, offline smoke tests, and CI. **Storage connectors, ingestion, retrieval, and answers are not implemented yet. Identity APIs and local owner setup are available with explicit HTTPS configuration.** Do not connect private company data to this foundation or expose it publicly.
+The development foundation includes a responsive Next.js workspace shell and FastAPI service, pinned dependency lockfiles, offline smoke tests, and CI. **Storage connectors, product retrieval, and answers are not implemented yet. An internal parser/indexing pipeline is available for authorized source revisions. Identity APIs and local owner setup are available with explicit HTTPS configuration.** Do not connect private company data to this foundation or expose it publicly.
 
 See the [architecture diagram and component guide](infra/ARCHITECTURE.md) and
-[durable job runbook](infra/JOBS.md).
+[durable job runbook](infra/JOBS.md) and [ingestion runbook](infra/INGESTION.md).
 
 ## Prerequisites
 

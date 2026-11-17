@@ -9,6 +9,11 @@ def execute(service: JobService, tenant_id: str, job_id: str) -> None:
     lease = service.claim(tenant_id, job_id)
     if lease is None:
         return
+    if lease.kind == "ingest" and lease.processing_version == "ingestion-v1":
+        from rag_api.ingestion.runtime import execute_ingestion
+
+        execute_ingestion(service, lease)
+        return
     if lease.kind != "worker_check" or lease.processing_version != "worker-check-v1":
         service.fail(lease, transient=False)
         return
