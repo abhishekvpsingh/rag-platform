@@ -36,6 +36,10 @@ class Revision(Base):
     processing_version: Mapped[str] = mapped_column(String(64))
     embedding_model: Mapped[str] = mapped_column(String(128))
     embedding_revision: Mapped[str] = mapped_column(String(128))
+    embedding_provider: Mapped[str] = mapped_column(String(512))
+    parser_version: Mapped[str] = mapped_column(String(64))
+    chunker_version: Mapped[str] = mapped_column(String(64))
+    input_byte_limit: Mapped[int]
     dimensions: Mapped[int]
     observed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     output_key: Mapped[str | None] = mapped_column(String(64))
@@ -46,4 +50,18 @@ class Revision(Base):
         ForeignKeyConstraint(["tenant_id", "job_id"], ["jobs.tenant_id", "jobs.id"]),
         UniqueConstraint("tenant_id", "job_id"),
         UniqueConstraint("tenant_id", "document_id", "generation"),
+    )
+
+
+class SourceVersion(Base):
+    """Provider versions can share identical content without losing their provenance."""
+
+    __tablename__ = "source_versions"
+    tenant_id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    document_id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    source_version: Mapped[str] = mapped_column(String(256), primary_key=True)
+    content_hash: Mapped[str] = mapped_column(String(64))
+    observed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    __table_args__ = (
+        ForeignKeyConstraint(["tenant_id", "document_id"], ["documents.tenant_id", "documents.id"]),
     )

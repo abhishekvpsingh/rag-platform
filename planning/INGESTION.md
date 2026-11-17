@@ -27,3 +27,11 @@ Publish a document generation only after its required chunks are available. Keep
 ## Visibility
 
 Show discovered files, processed files, bytes/chunks, exclusions, errors, queue age, throughput, last successful sync, and coverage. Estimates must be labeled estimates; progress denominators can change during discovery. Ingestion never blocks interactive queries through unbounded shared resource consumption.
+
+## T007 implementation
+
+The initial supported subset, limits, isolated Linux execution, model configuration,
+publication boundary and verification commands are defined in the
+[ingestion runbook](../rag-platform/infra/INGESTION.md) and
+[ADR 0006](decisions/0006-ingestion-boundaries.md). Scanned PDFs, formula workbooks,
+OCR, language inference, live connectors and analytical aggregation remain unavailable.

@@ -24,7 +24,7 @@ from rag_api.ingestion.embeddings import (
     FixtureEmbeddings,
     ProviderFailure,
 )
-from rag_api.ingestion.models import Revision
+from rag_api.ingestion.models import Revision, SourceVersion
 from rag_api.ingestion.parsing import MAX_FILE, ParseFailure, parse
 from rag_api.ingestion.sandbox import isolated_parse
 from rag_api.ingestion.search import OpenSearchIndex
@@ -206,6 +206,14 @@ def test_generation_pipeline_reuse_and_revocation(service: IdentityService, tmp_
         ).id
         == job.id
     )
+    assert (
+        ingestion.submit(
+            token, connection, "file-1", "new-etag", "md", b"# Leave\nFive days", model.config
+        ).id
+        == job.id
+    )
+    with Session(service.engine) as db:
+        assert db.get(SourceVersion, (job.tenant_id, job.target_id, "new-etag")) is not None
     requests = []
 
     def respond(request: httpx.Request) -> httpx.Response:
@@ -237,3 +245,76 @@ def test_generation_pipeline_reuse_and_revocation(service: IdentityService, tmp_
         assert failed and failed.state == "failed"
     with pytest.raises(AccessDenied):
         ingestion.submit(token, connection, "file-1", "v3", "txt", b"no", model.config)
+
+
+@pytest.mark.parametrize("invalidate", ["generation", "tombstone", "cancel"])
+def test_inflight_output_cannot_activate(
+    service: IdentityService, tmp_path: Path, invalidate: str
+) -> None:
+    token = owner(service)
+    connection = service.add_connection(token, "google_drive", "fixture")
+    service.verify_source_identity(token, connection, "subject", now() + timedelta(hours=1))
+    ingestion = IngestionService(service, LocalArtifacts(tmp_path))
+    model = FixtureEmbeddings()
+    job = ingestion.submit(token, connection, "source", "v1", "txt", b"Old text", model.config)
+    lease = ingestion.jobs.claim(job.tenant_id, job.id)
+    assert lease
+
+    def response(request: httpx.Request) -> httpx.Response:
+        if request.url.path == "/_bulk":
+            if invalidate == "cancel":
+                ingestion.jobs.cancel(token, job.id)
+            else:
+                ingestion.jobs.invalidate_target(token, job.id, invalidate == "tombstone")
+        return httpx.Response(200, json={"errors": False})
+
+    client = httpx.Client(
+        base_url="https://search.example", transport=httpx.MockTransport(response)
+    )
+    run_pipeline(service.engine, lease, ingestion.artifacts, model, OpenSearchIndex(client), parse)
+    with Session(service.engine) as db:
+        target = db.get(WorkTarget, (job.tenant_id, job.target_id))
+        assert target and target.active_generation is None
+        revision = db.scalar(select(Revision).where(Revision.job_id == job.id))
+        assert revision and revision.output_key is None
+
+
+def test_provider_retry_and_owner_isolation(service: IdentityService, tmp_path: Path) -> None:
+    from test_identity import member
+
+    token = owner(service)
+    connection = service.add_connection(token, "google_drive", "fixture")
+    service.verify_source_identity(token, connection, "subject", now() + timedelta(hours=1))
+    ingestion = IngestionService(service, LocalArtifacts(tmp_path))
+
+    class Flaky(FixtureEmbeddings):
+        calls = 0
+
+        def embed(self, texts: list[str]) -> list[list[float]]:
+            self.calls += 1
+            if self.calls == 1:
+                raise ProviderFailure(True)
+            return super().embed(texts)
+
+    model = Flaky()
+    for other in (member(service, service.authenticate(token).tenant_id), member(service)):
+        with pytest.raises(AccessDenied):
+            ingestion.submit(other, connection, "file", "v1", "txt", b"private", model.config)
+    job = ingestion.submit(token, connection, "file", "v1", "txt", b"private", model.config)
+    client = httpx.Client(
+        base_url="https://search.example",
+        transport=httpx.MockTransport(lambda _: httpx.Response(200, json={"errors": False})),
+    )
+    lease = ingestion.jobs.claim(job.tenant_id, job.id)
+    assert lease
+    run_pipeline(service.engine, lease, ingestion.artifacts, model, OpenSearchIndex(client), parse)
+    with Session(service.engine) as db, db.begin():
+        retry = db.get(Job, (job.tenant_id, job.id))
+        assert retry and retry.state == "retrying"
+        retry.available_at = now() - timedelta(seconds=1)
+    lease = ingestion.jobs.claim(job.tenant_id, job.id)
+    assert lease
+    run_pipeline(service.engine, lease, ingestion.artifacts, model, OpenSearchIndex(client), parse)
+    with Session(service.engine) as db:
+        complete = db.get(Job, (job.tenant_id, job.id))
+        assert complete and complete.state == "succeeded" and complete.attempts == 2

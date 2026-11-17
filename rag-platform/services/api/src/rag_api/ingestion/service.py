@@ -6,6 +6,7 @@ from collections.abc import Callable
 from uuid import uuid4
 
 from sqlalchemy import Engine, select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from rag_api.identity.models import Connection, SourceIdentity
@@ -13,7 +14,7 @@ from rag_api.identity.service import AccessDenied, IdentityService, utc
 from rag_api.ingestion.artifacts import LocalArtifacts
 from rag_api.ingestion.chunking import CHUNKER_VERSION, chunks
 from rag_api.ingestion.embeddings import Embedder, EmbeddingConfig, ProviderFailure
-from rag_api.ingestion.models import Document, Revision
+from rag_api.ingestion.models import Document, Revision, SourceVersion
 from rag_api.ingestion.parsing import PARSER_VERSION, Parsed, ParseFailure
 from rag_api.ingestion.sandbox import isolated_parse
 from rag_api.ingestion.search import OpenSearchIndex, SearchFailure
@@ -42,6 +43,26 @@ class IngestionService:
         content: bytes,
         config: EmbeddingConfig,
     ) -> Job:
+        for attempt in range(2):
+            try:
+                return self._submit(
+                    token, connection_id, source_key, source_version, format, content, config
+                )
+            except IntegrityError:
+                if attempt:
+                    raise JobConflict() from None
+        raise JobConflict()
+
+    def _submit(
+        self,
+        token: str,
+        connection_id: str,
+        source_key: str,
+        source_version: str,
+        format: str,
+        content: bytes,
+        config: EmbeddingConfig,
+    ) -> Job:
         principal = self.identity.authorize_source(token, connection_id)
         if not 1 <= len(source_key) <= 512 or not 1 <= len(source_version) <= 256:
             raise ValueError("Invalid source identifiers")
@@ -51,11 +72,11 @@ class IngestionService:
         version = processing(config)
         with Session(self.identity.engine, expire_on_commit=False) as db, db.begin():
             IdentityService.resolve(db, token)
-            # Serialize revisions of a connection; no external calls while holding this lock.
+            # Target locks serialize updates; unique source IDs fence first creation.
             connection = db.scalar(
-                select(Connection)
-                .where(Connection.tenant_id == principal.tenant_id, Connection.id == connection_id)
-                .with_for_update()
+                select(Connection).where(
+                    Connection.tenant_id == principal.tenant_id, Connection.id == connection_id
+                )
             )
             if (
                 connection is None
@@ -116,8 +137,10 @@ class IngestionService:
                 ):
                     job = db.get(Job, (principal.tenant_id, prior.job_id))
                     assert job is not None
+                    self.record_version(db, principal.tenant_id, document.id, source_version, key)
                     return job
                 target.generation += 1
+            self.record_version(db, principal.tenant_id, document.id, source_version, key)
             now = self.jobs.clock()
             job_id, revision_id = str(uuid4()), str(uuid4())
             job = Job(
@@ -154,12 +177,34 @@ class IngestionService:
                     embedding_model=config.model,
                     embedding_revision=config.revision,
                     dimensions=config.dimensions,
+                    embedding_provider=config.provider,
+                    parser_version=PARSER_VERSION,
+                    chunker_version=CHUNKER_VERSION,
+                    input_byte_limit=config.max_input_bytes,
                     observed_at=now,
                 )
             )
             self.jobs.event(db, job, now)
             IdentityService.audit(db, principal, "ingestion.created")
             return job
+
+    def record_version(
+        self, db: Session, tenant: str, document: str, version: str, key: str
+    ) -> None:
+        existing = db.get(SourceVersion, (tenant, document, version))
+        if existing:
+            if existing.content_hash != key:
+                raise JobConflict()
+        else:
+            db.add(
+                SourceVersion(
+                    tenant_id=tenant,
+                    document_id=document,
+                    source_version=version,
+                    content_hash=key,
+                    observed_at=self.jobs.clock(),
+                )
+            )
 
 
 def authorized(db: Session, jobs: JobService, lease: Lease) -> tuple[Job, Revision, Document]:
@@ -229,6 +274,7 @@ def run_pipeline(
         snapshot()
         if not jobs.heartbeat(lease, 85):
             return
+
         def checkpoint() -> bool:
             snapshot()
             return jobs.heartbeat(lease, 90)

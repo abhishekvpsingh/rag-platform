@@ -40,6 +40,10 @@ def upgrade() -> None:
         sa.Column("processing_version", sa.String(length=64), nullable=False),
         sa.Column("embedding_model", sa.String(length=128), nullable=False),
         sa.Column("embedding_revision", sa.String(length=128), nullable=False),
+        sa.Column("embedding_provider", sa.String(length=512), nullable=False),
+        sa.Column("parser_version", sa.String(length=64), nullable=False),
+        sa.Column("chunker_version", sa.String(length=64), nullable=False),
+        sa.Column("input_byte_limit", sa.Integer(), nullable=False),
         sa.Column("dimensions", sa.Integer(), nullable=False),
         sa.Column("observed_at", sa.DateTime(timezone=True), nullable=False),
         sa.Column("output_key", sa.String(length=64), nullable=True),
@@ -57,8 +61,22 @@ def upgrade() -> None:
         sa.UniqueConstraint("tenant_id", "document_id", "generation"),
         sa.UniqueConstraint("tenant_id", "job_id"),
     )
+    op.create_table(
+        "source_versions",
+        sa.Column("tenant_id", sa.String(length=36), nullable=False),
+        sa.Column("document_id", sa.String(length=36), nullable=False),
+        sa.Column("source_version", sa.String(length=256), nullable=False),
+        sa.Column("content_hash", sa.String(length=64), nullable=False),
+        sa.Column("observed_at", sa.DateTime(timezone=True), nullable=False),
+        sa.ForeignKeyConstraint(
+            ["tenant_id", "document_id"],
+            ["documents.tenant_id", "documents.id"],
+        ),
+        sa.PrimaryKeyConstraint("tenant_id", "document_id", "source_version"),
+    )
 
 
 def downgrade() -> None:
+    op.drop_table("source_versions")
     op.drop_table("document_revisions")
     op.drop_table("documents")

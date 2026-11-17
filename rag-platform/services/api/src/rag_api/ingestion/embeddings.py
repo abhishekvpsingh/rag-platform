@@ -1,8 +1,10 @@
 """Explicitly configured, bounded embedding transport; no automatic external fallback."""
 
 import hashlib
+import json
 import math
-from dataclasses import dataclass
+import time
+from dataclasses import dataclass, replace
 from typing import Protocol
 from urllib.parse import urlsplit
 
@@ -22,9 +24,14 @@ class EmbeddingConfig:
     dimensions: int
     max_input_bytes: int = 2048
     batch_size: int = 16
+    provider: str = "fixture"
 
     def __post_init__(self) -> None:
-        if not self.model or not self.revision or not 1 <= self.dimensions <= 4096:
+        if (
+            not 1 <= len(self.model) <= 128
+            or not 1 <= len(self.revision) <= 128
+            or not 1 <= self.dimensions <= 4096
+        ):
             raise ValueError("Invalid embedding configuration")
         if not 256 <= self.max_input_bytes <= 8192 or not 1 <= self.batch_size <= 32:
             raise ValueError("Invalid embedding limits")
@@ -32,7 +39,7 @@ class EmbeddingConfig:
     @property
     def fingerprint(self) -> str:
         return hashlib.sha256(
-            f"{self.model}/{self.revision}/{self.dimensions}".encode()
+            json.dumps([self.provider, self.model, self.revision, self.dimensions]).encode()
         ).hexdigest()
 
 
@@ -73,9 +80,9 @@ class CompatibleEmbeddings:
             or parsed.fragment
         ):
             raise ValueError("Embedding endpoint must be an approved HTTPS URL")
-        if origin not in allowed_origins or not api_key:
+        if origin not in allowed_origins or not api_key or len(endpoint) > 512:
             raise ValueError("Embedding provider not approved")
-        self.config = config
+        self.config = replace(config, provider=endpoint.rstrip("/"))
         self.endpoint = endpoint.rstrip("/") + "/embeddings"
         self.api_key = api_key
         self.client = client
@@ -85,6 +92,7 @@ class CompatibleEmbeddings:
             raise ProviderFailure(False)
         if any(not text or len(text.encode()) > self.config.max_input_bytes for text in texts):
             raise ProviderFailure(False)
+        started = time.monotonic()
         try:
             with httpx.Client(timeout=15, follow_redirects=False, trust_env=False) as owned:
                 client = self.client or owned
@@ -106,10 +114,11 @@ class CompatibleEmbeddings:
                         )
                     body = bytearray()
                     for part in response.iter_bytes():
+                        if time.monotonic() - started > 15:
+                            raise ProviderFailure(True)
                         body.extend(part)
                         if len(body) > 8 * 1024 * 1024:
                             raise ProviderFailure(False)
-            import json
 
             payload = json.loads(body)
             records = payload["data"]

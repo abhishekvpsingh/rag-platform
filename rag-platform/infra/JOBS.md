@@ -16,10 +16,10 @@ docker compose exec api alembic upgrade head
 docker compose --profile jobs up -d dispatcher
 ```
 
-The worker consumes `runtime` and `maintenance`. The opt-in `jobs` profile adds
+The worker consumes `runtime`, `maintenance` and `ingestion`. The opt-in `jobs` profile adds
 the dispatcher, avoiding an implicit database migration or background job start
 in an existing installation. Workers have late acknowledgments, worker-loss
-redelivery and prefetch one. Ingestion handlers/queues arrive with T007.
+redelivery and prefetch one. T007 adds the ingestion queue and handler; see [ingestion](INGESTION.md).
 
 The initial installed handler is `worker_check`, version `worker-check-v1`: a
 bounded diagnostic that runs for 0–60 seconds, heartbeats and publishes a durable

@@ -97,6 +97,7 @@ jobs:
       - run: sudo sysctl -w vm.max_map_count=262144
       - run: docker compose build
       - run: python scripts/verify_runtime.py
+      - run: docker compose exec -T api python scripts/verify_ingestion.py
       - if: always()
         run: docker compose down --timeout 30
 

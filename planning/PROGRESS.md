@@ -19,20 +19,19 @@ T001 is complete and merged through [PR #2](https://github.com/abhishekvpsingh/r
 
 ## Development checkpoint
 
-- Updated at: 2026-11-17T04:21:21.679442+00:00.
+- Updated at: 2026-11-17T04:30:27.277882+00:00.
 - Session state: in-progress.
-- Active task: T007 parser/indexing pipeline, parser/artifact/embedding/revision/index modules implemented; integration verification underway.
+- Active task: T007 implementation complete; final real-runtime and CI verification pending.
 - Branch: feature/T007-parser-indexing; base main f50152da02e6f7810501b6474a63a571cac18454.
-- Last checkpoint: 261c4d8 carries T006 completion record. T006 post-merge CI confirmed successful.
-- Changes: new ingestion modules, PDF/safe XML dependencies and lock, libseccomp runtime dependency. Existing next-env.d.ts development-path modification is preserved and excluded.
-- Design: Linux parser child uses CPU/memory/output/time limits and a default-deny syscall allowlist after imports. Native non-Linux parsing fails closed; macOS uses Compose Linux containers. Failed native macOS sandbox experiment was removed, not bypassed.
-- Checks: dependency resolution passed. 12 native fixture tests passed (Linux sandbox skipped on Mac); all 13 tests including all seven isolated formats and denied socket/file/fork operations passed in disposable Linux Docker. Mypy passed before latest handler changes. T007 not complete.
-- Running operations: none; next real OpenSearch/migration checks pending.
-- Blockers: none for synthetic development.
-- Next action: implement revision/index publication and durable handler; run parser sandbox/format/security tests and real OpenSearch integration.
-- Remaining acceptance: locators, unsafe/oversized inputs, unchanged-content reuse, provider recovery, generation activation, all CI.
-- Remote: T007 not pushed yet; no PR. T006 remains merged via PR #7.
-- Limits: no live source or external model calls authorized/configured; fixture embeddings must remain labeled.
+- Last saved implementation: 736a06b pushed; draft [PR #8](https://github.com/abhishekvpsingh/rag-platform/pull/8). Additional tests, schema provenance, runbook and real OpenSearch verification are being committed.
+- Changes: isolated parsers, artifact/revision storage, embedding adapter, model-specific OpenSearch staging, generation publication, durable worker integration, operator CLI, migration 0003, test fixtures/CI/runbooks. Existing next-env.d.ts dev-path edit was preserved initially; Next build regenerated its normal tracked contents.
+- Checks: full native 89 passed/2 platform skips; expanded ingestion 16 passed/1 Linux skip; initial Linux sandbox suite 13 passed; PostgreSQL suite 34 passed/1 Linux skip; RabbitMQ worker recovery, migration round trip/drift and identity restore passed. Seven synthetic formats indexed in real OpenSearch. Ruff/mypy, frontend lint/typecheck/build and 7 tests passed. See [T007 evidence](verification/T007.md).
+- Running operations: final Docker/OpenSearch schema and all 10 browser checks passed; final remote CI pending. First checkpoint CI failed only formatting; corrected locally, final head needs its own CI.
+- Design: default-deny Linux parser; Mac uses containers. Source-version observations preserve changed ETags without repeated embedding. External provider configuration is explicit; fixtures remain non-semantic.
+- Next action: confirm final tests, push complete implementation, review PR #8 and require all exact-head checks before merge.
+- Blockers: none for synthetic pipeline acceptance; live source/model validation remains later.
+- Limits: no product retrieval, source OAuth, OCR, formula evaluation or analytical aggregation; inactive index entries are not authorized evidence.
+- Merge restriction: draft must not merge until final exact-head CI/security gates pass.
 
 ## Historical T002 integration checkpoint
 
