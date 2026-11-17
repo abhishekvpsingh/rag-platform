@@ -187,7 +187,11 @@ for action in (lambda: socket.socket(), lambda: open('/etc/passwd'), lambda: os.
         continue
     raise SystemExit(1)
 """
-    completed = subprocess.run([sys.executable, "-c", script], timeout=10)
+    completed = subprocess.run(
+        [sys.executable, "-c", script],
+        timeout=10,
+        env={"PYTHONPATH": str(Path(isolated_parse.__code__.co_filename).resolve().parents[2])},
+    )
     assert completed.returncode == 0
 
 
